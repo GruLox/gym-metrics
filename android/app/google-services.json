@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "475110957780",
+    "project_id": "gymmetrics-e2ae0",
+    "storage_bucket": "gymmetrics-e2ae0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475110957780:android:a325322534417c616e9141",
+        "android_client_info": {
+          "package_name": "com.example.gym_metrics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "475110957780-reihs4b032cfa4ol6o327fmvmtbbien7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXunXOTXPnBVXiGkZs6aQX3vM_QzU-CLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475110957780-reihs4b032cfa4ol6o327fmvmtbbien7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,4 +13,5 @@ const kWhiteInputDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(10.0)),
     borderSide: BorderSide.none,
   ),
+  contentPadding: EdgeInsets.all(10.0),
 );

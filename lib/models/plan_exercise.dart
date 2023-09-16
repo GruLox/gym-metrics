@@ -3,9 +3,9 @@ import 'package:gym_metrics/models/exercise.dart';
 class PlanExercise {
   PlanExercise({
     required this.exercise,
-    required this.sets,
-    required this.reps,
-    required this.weight,
+    this.sets = 1,
+    this.reps = 0,
+    this.weight = 0, 
   });
 
   final Exercise exercise;

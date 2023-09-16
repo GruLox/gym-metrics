@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
+import 'package:gym_metrics/models/plan_exercise.dart';
 import 'package:gym_metrics/screens/add_exercise_screen.dart';
 import 'package:gym_metrics/models/exercise.dart';
 import 'package:gym_metrics/widgets/selectable_exercise_card.dart';
@@ -24,11 +25,23 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
   bool isSelected = false;
+  List<Exercise> selectedExercises = [];
 
   @override
   void initState() {
     super.initState();
     exercisesFuture = getExercises();
+  }
+
+  void selectionCallback(Exercise exercise) {
+    setState(() {
+      if (selectedExercises.contains(exercise)) {
+        selectedExercises.remove(exercise);
+      } else {
+        selectedExercises.add(exercise);
+      }
+      print(selectedExercises);
+    });
   }
 
   Future<List<Exercise>> getExercises() async {
@@ -57,6 +70,14 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
             exercise.muscleGroup.toLowerCase().contains(query.toLowerCase());
       }).toList();
     });
+  }
+
+  void addExercisesToPlan() {
+    final planExercises = selectedExercises.map((exercise) {
+      return PlanExercise(exercise: exercise);
+    }).toList();
+
+    Navigator.pop(context, planExercises);
   }
 
   @override
@@ -93,7 +114,7 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
                 ),
           IconButton(
             icon: Icon(isSearching ? Icons.close : Icons.search),
-            iconSize: isSearching ? 30.0 : 24,
+            iconSize: isSearching ? 30.0 : 24.0,
             onPressed: () {
               setState(
                 () {
@@ -113,6 +134,7 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
         foregroundColor: Colors.white,
         onPressed: () {
           // TODO add exercise to plan somehow engineer state
+          addExercisesToPlan();
         },
         child: const Icon(Icons.check),
       ),
@@ -157,6 +179,7 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
                         return SelectableExerciseCard(
                           name: exercise.name,
                           muscleGroup: exercise.muscleGroup,
+                          selectionCallback: selectionCallback,
                         );
                       },
                     );

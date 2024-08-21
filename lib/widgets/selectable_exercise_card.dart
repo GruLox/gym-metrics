@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/models/exercise.dart';
-import 'package:gym_metrics/models/plan_exercise.dart';
 import 'package:gym_metrics/widgets/exercise_card.dart';
 
 class SelectableExerciseCard extends ExerciseCard {
@@ -27,7 +26,6 @@ class _SelectableExerciseCardState extends State<SelectableExerciseCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     exercise = Exercise(
       name: widget.name,

@@ -1,10 +1,45 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/screens/add_workout_plan_screen.dart';
+import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/widgets/workout_plan_card.dart';
 
-class WorkoutScreen extends StatelessWidget {
+final FirebaseFirestore db = FirebaseFirestore.instance;
+final FirebaseAuth auth = FirebaseAuth.instance;
+
+class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({Key? key}) : super(key: key);
+
+  @override
+  State<WorkoutScreen> createState() => _WorkoutScreenState();
+}
+
+class _WorkoutScreenState extends State<WorkoutScreen> {
+  late List<WorkoutPlan> workoutPlans;
+  late Future<List<WorkoutPlan>> workoutPlansFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    workoutPlansFuture = getWorkoutPlans();
+  }
+
+  Future<List<WorkoutPlan>> getWorkoutPlans() async {
+    final QuerySnapshot querySnapshot = await db
+        .collection('users')
+        .doc(auth.currentUser?.uid)
+        .collection('workoutPlans')
+        .get();
+
+    workoutPlans = querySnapshot.docs.map((doc) {
+      final dynamic data = doc.data();
+      final WorkoutPlan workoutPlan = WorkoutPlan.fromMap(data);
+      return workoutPlan;
+    }).toList();
+
+    return workoutPlans;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +73,20 @@ class WorkoutScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text(
-                  'Start an empty workout',
-                  style: TextStyle(
-                    fontSize: 18,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/active_workout', arguments: 
+                       WorkoutPlan(
+                        name: 'Quick Start',
+                        exerciseList: [],
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    'START AN EMPTY WORKOUT',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ),
@@ -55,20 +100,53 @@ class WorkoutScreen extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.add),
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    WorkoutPlan? addedWorkoutPlan = await Navigator.pushNamed(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddWorkoutPlanScreen(),
-                      ),
-                    );
+                      '/add-workout-plan',
+                    ) as WorkoutPlan?;
+                    if (addedWorkoutPlan != null) {
+                      setState(() {
+                        workoutPlans.add(addedWorkoutPlan);
+                      });
+                    }
                   },
                 ),
               ],
             ),
-            const WorkoutPlanCard(),
-            const SizedBox(height: 20.0),
-            const WorkoutPlanCard(),
+            Expanded(
+              child: FutureBuilder(
+                future: getWorkoutPlans(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.only(top: 0.0),
+                      itemCount: workoutPlans.length,
+                      itemBuilder: (context, index) {
+                        return WorkoutPlanCard(
+                          workoutPlan: workoutPlans[index],
+                          onWorkoutDeletedCallback: () {
+                            setState(() {
+                              workoutPlans.removeAt(index);
+                            });
+                          },
+                          onWorkoutUpdatedCallback: () {
+                            setState(() {
+                              getWorkoutPlans();
+                            });
+                          },
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),

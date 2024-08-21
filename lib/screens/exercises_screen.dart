@@ -6,8 +6,8 @@ import 'package:gym_metrics/screens/add_exercise_screen.dart';
 import 'package:gym_metrics/widgets/exercise_card.dart';
 import 'package:gym_metrics/models/exercise.dart';
 
-FirebaseFirestore db = FirebaseFirestore.instance;
-final auth = FirebaseAuth.instance;
+final FirebaseFirestore db = FirebaseFirestore.instance;
+final FirebaseAuth auth = FirebaseAuth.instance;
 
 class ExercisesScreen extends StatefulWidget {
   const ExercisesScreen({Key? key}) : super(key: key);

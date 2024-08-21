@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/models/plan_exercise.dart';
+import 'package:gym_metrics/models/weightlifting_set.dart';
 import 'package:gym_metrics/screens/add_exercise_screen.dart';
 import 'package:gym_metrics/models/exercise.dart';
 import 'package:gym_metrics/widgets/selectable_exercise_card.dart';
@@ -40,7 +40,6 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
       } else {
         selectedExercises.add(exercise);
       }
-      print(selectedExercises);
     });
   }
 
@@ -73,11 +72,11 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
   }
 
   void addExercisesToPlan() {
-    final planExercises = selectedExercises.map((exercise) {
-      return PlanExercise(exercise: exercise);
+    final newExercises = selectedExercises.map((exercise) {
+      return WeightliftingSet(exercise: exercise);
     }).toList();
 
-    Navigator.pop(context, planExercises);
+    Navigator.pop(context, newExercises);
   }
 
   @override
@@ -133,7 +132,6 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
         backgroundColor: kPrimaryColor,
         foregroundColor: Colors.white,
         onPressed: () {
-          // TODO add exercise to plan somehow engineer state
           addExercisesToPlan();
         },
         child: const Icon(Icons.check),

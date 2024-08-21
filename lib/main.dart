@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gym_metrics/screens/active_workout_screen.dart';
+import 'package:gym_metrics/screens/add_workout_plan_screen.dart';
+import 'package:gym_metrics/screens/edit_workout_plan_screen.dart';
 import 'package:gym_metrics/screens/exercise_selection_screen.dart';
 import 'package:gym_metrics/screens/login_screen.dart';
 import 'package:gym_metrics/screens/main_screen.dart';
 import 'package:gym_metrics/screens/register_screen.dart';
 import 'package:gym_metrics/screens/settings_screen.dart';
+import 'package:gym_metrics/screens/workout_plan_start_screen.dart';
 import 'firebase_options.dart';
 
 import 'package:gym_metrics/screens/history_screen.dart';
@@ -38,6 +42,10 @@ class _MyAppState extends State<MyApp> {
         '/home': (context) => const HomeScreen(),
         '/history': (context) => const HistoryScreen(),
         '/workout': (context) => const WorkoutScreen(),
+        '/add-workout-plan': (context) => const AddWorkoutPlanScreen(), 
+        '/edit-workout-plan':(context) => const EditWorkoutPlanScreen(),
+        '/workout-plan-start': (context) => const WorkoutPlanStartScreen(),
+        '/active_workout': (context) => const ActiveWorkoutScreen(),
         '/exercises': (context) => const ExercisesScreen(),
         '/select-exercises': (context) => const ExerciseSelectionScreen(),
         '/login': (context) => const LoginScreen(),

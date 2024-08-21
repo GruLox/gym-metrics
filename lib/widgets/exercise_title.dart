@@ -11,12 +11,15 @@ class ExerciseTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 20.0,
-        color: kPrimaryColor,
-        fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 20.0,
+          color: kPrimaryColor,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

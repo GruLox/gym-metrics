@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:gym_metrics/constants.dart';
+import 'package:gym_metrics/models/exercise_set.dart';
+import 'package:gym_metrics/models/weightlifting_set.dart';
 import 'package:gym_metrics/widgets/exercise_labels.dart';
 import 'package:gym_metrics/widgets/exercise_set_row.dart';
 import 'package:gym_metrics/widgets/exercise_title.dart';
@@ -7,19 +10,35 @@ import 'package:gym_metrics/widgets/exercise_title.dart';
 class ExerciseContainer extends StatefulWidget {
   const ExerciseContainer({
     super.key,
-    required this.title,
+    required this.weightliftingSet,
+    required this.index,
+    required this.onSetAddedCallback,
+    required this.onSetRemovedCallback,
+    required this.onExerciseRemovedCallback,
     this.isLocked = false,
   });
 
-  final String title;
-  final  bool isLocked;
+  final bool isLocked;
+  final WeightliftingSet weightliftingSet;
+  final int index;
+  final void Function(int index, ExerciseSet weightliftingSet)
+      onSetAddedCallback;
+  final void Function(int index, ExerciseSet weightliftingSet)
+      onSetRemovedCallback;
+  final void Function() onExerciseRemovedCallback;
 
   @override
   State<ExerciseContainer> createState() => _ExerciseContainerState();
 }
 
 class _ExerciseContainerState extends State<ExerciseContainer> {
-  int setCount = 1;
+  late int setCount;
+
+  @override
+  void initState() {
+    super.initState();
+    setCount = widget.weightliftingSet.sets.length;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +49,33 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
         ExerciseSetRow(
           isLocked: widget.isLocked,
           setNumber: i + 1,
+          onSetDismissedCallback: (int setNumber) {
+            setState(() {
+              setCount--;
+              widget.onSetRemovedCallback(
+                widget.index,
+                widget.weightliftingSet.sets[setNumber - 1],
+              );
+            });
+          },
         ),
       );
     }
 
+    if (setCount == 0) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        widget.onExerciseRemovedCallback();
+      });
+      return Container();
+    }
+
     return SizedBox(
-      height: setCount * 70.0 + 120.0,
+      height: setCount * 70.0 + 130.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20.0),
-          ExerciseTitle(title: widget.title),
+          ExerciseTitle(title: widget.weightliftingSet.exercise.name),
           const SizedBox(height: 15.0),
           Column(
             children: [
@@ -50,6 +85,10 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                 onPressed: () {
                   setState(() {
                     setCount++;
+                    widget.onSetAddedCallback(
+                      widget.index,
+                      const ExerciseSet(),
+                    );
                   });
                 },
                 child: const Text(

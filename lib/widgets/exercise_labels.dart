@@ -9,8 +9,8 @@ class ExerciseLabels extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          flex: 1,
+        const Expanded(
+          flex: 2,
           child: Text(
             'SET',
             style: TextStyle(
@@ -19,9 +19,9 @@ class ExerciseLabels extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        SizedBox(width: 10.0),
-        Expanded(
-          flex: 3,
+        const SizedBox(width: 10.0),
+        const Expanded(
+          flex: 4,
           child: Text(
             'PREVIOUS',
             style: TextStyle(
@@ -30,8 +30,8 @@ class ExerciseLabels extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        Expanded(
-          flex: 4,
+        const Expanded(
+          flex: 5,
           child: Text(
             'KG',
             style: TextStyle(
@@ -40,9 +40,9 @@ class ExerciseLabels extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        SizedBox(width: 10.0),
-        Expanded(
-          flex: 4,
+        const SizedBox(width: 10.0),
+        const Expanded(
+          flex: 5,
           child: Text(
             'REPS',
             style: TextStyle(

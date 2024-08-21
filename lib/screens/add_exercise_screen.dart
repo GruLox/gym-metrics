@@ -7,7 +7,7 @@ final db = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 
 class AddExerciseScreen extends StatefulWidget {
-  AddExerciseScreen({super.key, required this.addExercise});
+  const AddExerciseScreen({super.key, required this.addExercise});
 
   final Function addExercise;
 

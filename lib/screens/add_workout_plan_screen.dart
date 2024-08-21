@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/models/plan_exercise.dart';
-import 'package:gym_metrics/widgets/exercise_container.dart';
+import 'package:gym_metrics/models/exercise_set.dart';
+import 'package:gym_metrics/models/weightlifting_set.dart';
+import 'package:gym_metrics/models/workout_plan.dart';
+import 'package:gym_metrics/widgets/full_workout_plan.dart';
 
 final db = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
@@ -20,22 +22,32 @@ class AddWorkoutPlanScreen extends StatefulWidget {
 class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
   String muscleGroup = 'None';
   final TextEditingController _nameController = TextEditingController();
-  List<PlanExercise> exercises = [];
+  List<WeightliftingSet> exercises = [];
 
-  void addExercise() async {
+  void onSetAdded(int index, ExerciseSet weightliftingSet) {
+    setState(() {
+      exercises[index].addSet(weightliftingSet);
+    });
+  }
+
+  void onSetRemoved(int index, ExerciseSet weightliftingSet) {
+    setState(() {
+      exercises[index].removeSet(weightliftingSet);
+    });
+  }
+
+  void onExerciseRemoved(int index) {
+    setState(() {
+      exercises.removeAt(index);
+    });
+  }
+
+  void uploadWorkoutPlan(WorkoutPlan addedWorkoutPlan) async {
     await db
         .collection('users')
         .doc(auth.currentUser?.uid)
-        .collection('exercises')
-        .add({
-      'name': _nameController.text,
-      'nameLowercase': _nameController.text.toLowerCase(),
-      'muscleGroup': muscleGroup,
-    });
-    Future.delayed(Duration.zero, () {
-      // widget.addExercise();
-      Navigator.pop(context);
-    });
+        .collection('workoutPlans')
+        .add(addedWorkoutPlan.toMap());
   }
 
   @override
@@ -47,7 +59,14 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
-            onPressed: addExercise,
+            onPressed: () {
+              WorkoutPlan addedWorkoutPlan = WorkoutPlan(
+                name: _nameController.text,
+                exerciseList: exercises.reversed.toList(),
+              );
+              uploadWorkoutPlan(addedWorkoutPlan);
+              Navigator.pop(context, addedWorkoutPlan);
+            },
           ),
         ],
       ),
@@ -55,59 +74,27 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
         padding: const EdgeInsets.only(
           top: 20.0,
           bottom: 30.0,
-          left: 20.0,
-          right: 20.0,
         ),
         child: ListView(
           children: [
             const SizedBox(height: 20.0),
-            TextField(
-              controller: _nameController,
-              style: const TextStyle(color: Colors.black),
-              decoration: kWhiteInputDecoration.copyWith(
-                hintText: 'Workout Name',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: TextField(
+                controller: _nameController,
+                style: const TextStyle(color: Colors.black),
+                decoration: kWhiteInputDecoration.copyWith(
+                  hintText: 'Workout Name',
+                ),
               ),
             ),
             const SizedBox(height: 20.0),
-            SizedBox(
-              height: 500,
-              child: ListView.builder(
-                itemCount: exercises.length,
-                itemBuilder: (context, index) {
-                  return ExerciseContainer(
-                    title: exercises[index].exercise.name,
-                  );
-                },
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                List<PlanExercise>? addedExercises =
-                    await Navigator.pushNamed(context, '/select-exercises')
-                        as List<PlanExercise>?;
-                if (addedExercises != null) {
-                  setState(() {
-                    exercises.addAll(addedExercises);
-                  });
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kPrimaryColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'Add Exercise',
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
+            FullWorkoutPlan(
+              exercises: exercises,
+              onSetAdded: onSetAdded,
+              onSetRemoved: onSetRemoved,
+              onExerciseRemoved: onExerciseRemoved,
+              isLocked: true,
             ),
           ],
         ),
@@ -115,3 +102,4 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
     );
   }
 }
+

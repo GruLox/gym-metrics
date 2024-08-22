@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
+import 'package:gym_metrics/models/history_data.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/screens/exercises_screen.dart';
 import 'package:gym_metrics/screens/history_screen.dart';
@@ -19,9 +20,33 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
-  static const List<Widget> screens = [
+  static List<Widget> screens = [
     HomeScreen(),
-    HistoryScreen(),
+    HistoryScreen(
+      historyData: [
+        HistoryData(
+          title: 'Push',
+          date: 'September 1',
+          duration: '10m',
+          weight: '100kg',
+          prs: '3 PRs',
+        ),
+        HistoryData(
+          title: 'Pull',
+          date: 'September 2',
+          duration: '15m',
+          weight: '120kg',
+          prs: '5 PRs',
+        ),
+        HistoryData(
+          title: 'Legs',
+          date: 'September 3',
+          duration: '20m',
+          weight: '150kg',
+          prs: '7 PRs',
+        ),
+      ],
+    ),
     WorkoutScreen(),
     ExercisesScreen(),
   ];
@@ -90,7 +115,7 @@ class _MainScreenState extends State<MainScreen> {
               child: Container(
                 height: 60.0,
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 21, 40, 45),
+                    color: const Color.fromARGB(255, 21, 40, 45),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.5),

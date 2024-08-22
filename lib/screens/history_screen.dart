@@ -1,93 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
+import 'package:gym_metrics/models/history_data.dart';
+import 'package:gym_metrics/widgets/history_card.dart';
 
 class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({super.key});
+  final List<HistoryData> historyData;
+  final bool isLoading;
+  final String? errorMessage;
+
+  const HistoryScreen(
+      {super.key,
+      required this.historyData,
+      this.isLoading = false,
+      this.errorMessage});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         margin: kContainerMargin,
-        child: Scaffold(
-          body: Container(
-            margin: kContainerMargin,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('History', style: TextStyle(fontSize: 30.0)),
-                SizedBox(height: 20.0),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20.0),
-                  margin: const EdgeInsets.symmetric(vertical: 10.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Align(
+              alignment: Alignment.topRight,
+              child: Icon(Icons.calendar_month_outlined, size: 30.0),
+            ),
+            const Text('History', style: TextStyle(fontSize: 40.0)),
+            const SizedBox(height: 20.0),
+            if (isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (errorMessage != null)
+              Center(child: Text(errorMessage!))
+            else if (historyData.isEmpty)
+              const Center(child: Text('No history data available.'))
+            else
+              Flexible(
+                child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 5.0),
-                      Text(
-                        'Push',
-                        style: const TextStyle(
-                            fontSize: 14.0, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 5.0),
-                      Text(
-                        'September 1',
-                        style: const TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(height: 5.0),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.schedule,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 5.0),
-                          Text(
-                            '10m',
-                            style: const TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(width: 10.0),
-                          Icon(
-                            Icons.monitor_weight_outlined,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 5.0),
-                          Text(
-                            '100kg',
-                            style: const TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          SizedBox(width: 10.0),
-                          Icon(Icons.emoji_events_outlined, color: Colors.grey),
-                          const SizedBox(width: 5.0),
-                          Text(
-                            '3 PRs',
-                            style: const TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                    children: historyData
+                        .map((data) => HistoryCard(data: data))
+                        .toList(),
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+          ],
         ),
       ),
     );

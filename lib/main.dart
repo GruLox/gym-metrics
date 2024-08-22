@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gym_metrics/models/history_data.dart';
 import 'package:gym_metrics/screens/active_workout_screen.dart';
 import 'package:gym_metrics/screens/add_workout_plan_screen.dart';
 import 'package:gym_metrics/screens/edit_workout_plan_screen.dart';
@@ -40,10 +41,34 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/': (context) => const MainScreen(),
         '/home': (context) => const HomeScreen(),
-        '/history': (context) => const HistoryScreen(),
+        '/history': (context) => HistoryScreen(
+              historyData: [
+                HistoryData(
+                  title: 'Push',
+                  date: 'September 1',
+                  duration: '10m',
+                  weight: '100kg',
+                  prs: '3 PRs',
+                ),
+                HistoryData(
+                  title: 'Pull',
+                  date: 'September 2',
+                  duration: '15m',
+                  weight: '120kg',
+                  prs: '5 PRs',
+                ),
+                HistoryData(
+                  title: 'Legs',
+                  date: 'September 3',
+                  duration: '20m',
+                  weight: '150kg',
+                  prs: '7 PRs',
+                ),
+              ],
+            ),
         '/workout': (context) => const WorkoutScreen(),
-        '/add-workout-plan': (context) => const AddWorkoutPlanScreen(), 
-        '/edit-workout-plan':(context) => const EditWorkoutPlanScreen(),
+        '/add-workout-plan': (context) => const AddWorkoutPlanScreen(),
+        '/edit-workout-plan': (context) => const EditWorkoutPlanScreen(),
         '/workout-plan-start': (context) => const WorkoutPlanStartScreen(),
         '/active_workout': (context) => const ActiveWorkoutScreen(),
         '/exercises': (context) => const ExercisesScreen(),
@@ -70,11 +95,9 @@ class _MyAppState extends State<MyApp> {
             fontSize: 30.0,
           ),
         ),
-
       ),
       debugShowCheckedModeBanner: false,
       title: 'GymMetrics',
     );
   }
 }
-

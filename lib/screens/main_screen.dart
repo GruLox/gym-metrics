@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   int currentIndex = 0;
 
   static List<Widget> screens = [
-    HomeScreen(),
+    const HomeScreen(),
     HistoryScreen(
       historyData: [
         HistoryData(
@@ -47,8 +47,8 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ],
     ),
-    WorkoutScreen(),
-    ExercisesScreen(),
+    const WorkoutScreen(),
+    const ExercisesScreen(),
   ];
 
   @override
@@ -63,6 +63,7 @@ class _MainScreenState extends State<MainScreen> {
 
     final WorkoutPlan workoutPlan = args['workoutPlan'] as WorkoutPlan? ??
         WorkoutPlan(
+          id: '',
           name: '',
           exerciseList: [],
         );

@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/models/exercise_set.dart';
 import 'package:gym_metrics/models/weightlifting_set.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/widgets/full_workout_plan.dart';
-
-final db = FirebaseFirestore.instance;
-final auth = FirebaseAuth.instance;
+import 'package:gym_metrics/state/workout_state.dart';
+import 'package:provider/provider.dart';
 
 class AddWorkoutPlanScreen extends StatefulWidget {
   const AddWorkoutPlanScreen({
@@ -24,30 +21,27 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
   final TextEditingController _nameController = TextEditingController();
   List<WeightliftingSet> exercises = [];
 
-  void onSetAdded(int index, ExerciseSet weightliftingSet) {
+  void addSet(int index, ExerciseSet weightliftingSet) {
     setState(() {
       exercises[index].addSet(weightliftingSet);
     });
   }
 
-  void onSetRemoved(int index, ExerciseSet weightliftingSet) {
+  void removeSet(int index, ExerciseSet weightliftingSet) {
     setState(() {
       exercises[index].removeSet(weightliftingSet);
     });
   }
 
-  void onExerciseRemoved(int index) {
+  void removeExercise(int index) {
     setState(() {
       exercises.removeAt(index);
     });
   }
 
   void uploadWorkoutPlan(WorkoutPlan addedWorkoutPlan) async {
-    await db
-        .collection('users')
-        .doc(auth.currentUser?.uid)
-        .collection('workoutPlans')
-        .add(addedWorkoutPlan.toMap());
+    final workoutState = Provider.of<WorkoutState>(context, listen: false);
+    await workoutState.addWorkoutPlan(addedWorkoutPlan);
   }
 
   @override
@@ -61,6 +55,7 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
             icon: const Icon(Icons.check),
             onPressed: () {
               WorkoutPlan addedWorkoutPlan = WorkoutPlan(
+                id: '',
                 name: _nameController.text,
                 exerciseList: exercises.reversed.toList(),
               );
@@ -91,9 +86,9 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
             const SizedBox(height: 20.0),
             FullWorkoutPlan(
               exercises: exercises,
-              onSetAdded: onSetAdded,
-              onSetRemoved: onSetRemoved,
-              onExerciseRemoved: onExerciseRemoved,
+              onSetAdded: addSet,
+              onSetRemoved: removeSet,
+              onExerciseRemoved: removeExercise,
               isLocked: true,
             ),
           ],
@@ -102,4 +97,3 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
     );
   }
 }
-

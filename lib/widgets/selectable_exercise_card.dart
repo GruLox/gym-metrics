@@ -28,6 +28,7 @@ class _SelectableExerciseCardState extends State<SelectableExerciseCard> {
   void initState() {
     super.initState();
     exercise = Exercise(
+      id: '', // #TODO: Add id to Exercise model
       name: widget.name,
       muscleGroup: widget.muscleGroup,
     );

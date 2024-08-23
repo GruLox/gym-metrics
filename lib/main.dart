@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:gym_metrics/state/exercise_state.dart';
+import 'package:provider/provider.dart';
+
+import 'package:gym_metrics/firebase/firebase_initializer.dart';
+
 import 'package:gym_metrics/models/history_data.dart';
 import 'package:gym_metrics/screens/active_workout_screen.dart';
 import 'package:gym_metrics/screens/add_workout_plan_screen.dart';
@@ -10,19 +14,26 @@ import 'package:gym_metrics/screens/main_screen.dart';
 import 'package:gym_metrics/screens/register_screen.dart';
 import 'package:gym_metrics/screens/settings_screen.dart';
 import 'package:gym_metrics/screens/workout_plan_start_screen.dart';
-import 'firebase_options.dart';
-
 import 'package:gym_metrics/screens/history_screen.dart';
 import 'package:gym_metrics/screens/home_screen.dart';
 import 'package:gym_metrics/screens/exercises_screen.dart';
 import 'package:gym_metrics/screens/workout_screen.dart';
+import 'package:gym_metrics/state/user_state.dart';
+import 'package:gym_metrics/state/workout_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  await initializeFirebase();
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserState()),
+        ChangeNotifierProvider(create: (_) => WorkoutState()),
+        ChangeNotifierProvider(create: (_) => ExerciseState()),
+      ],
+      child: MyApp(),
+    ),
   );
-  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {

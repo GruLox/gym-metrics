@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_metrics/constants.dart';
 
 const kExerciseIcon = Icons.fitness_center;
 
@@ -26,6 +27,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
       child: Row(
         children: [
           CircleAvatar(
+            backgroundColor: kAvatarBackgroundColor,
             radius: 30.0,
             child: Icon(
               widget.icon,

@@ -82,8 +82,10 @@ class _EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
             icon: const Icon(Icons.check),
             onPressed: () {
               WorkoutPlan updatedWorkoutPlan = WorkoutPlan(
+                id: workoutPlan.id,
                 name: _nameController.text,
                 exerciseList: exercises.reversed.toList(),
+                workoutNote: workoutPlan.workoutNote,
               );
               updateWorkoutPlan(workoutPlan, updatedWorkoutPlan);
               Navigator.pop(context, updatedWorkoutPlan);

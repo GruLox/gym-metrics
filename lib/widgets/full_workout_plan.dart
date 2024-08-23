@@ -15,12 +15,12 @@ class FullWorkoutPlan extends StatefulWidget {
 
   FullWorkoutPlan({
     super.key,
-    required this.exercises,
+    required List<WeightliftingSet> exercises,
     required this.onSetAdded,
     required this.onSetRemoved,
     required this.onExerciseRemoved,
     this.isLocked = false,
-  });
+  }) : exercises = exercises;
 
   @override
   State<FullWorkoutPlan> createState() => _FullWorkoutPlanState();

@@ -54,6 +54,7 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
     final exercises = querySnapshot.docs.map((doc) {
       final data = doc.data();
       return Exercise(
+        id: doc.id,
         name: data['name'],
         muscleGroup: data['muscleGroup'],
       );

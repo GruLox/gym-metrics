@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-
-final db = FirebaseFirestore.instance;
-final auth = FirebaseAuth.instance;
+import 'package:gym_metrics/models/exercise.dart';
+import 'package:provider/provider.dart';
+import 'package:gym_metrics/state/exercise_state.dart';
 
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({super.key, required this.addExercise});
@@ -16,23 +14,20 @@ class AddExerciseScreen extends StatefulWidget {
 }
 
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
-  String muscleGroup = 'None';
+  String _muscleGroup = 'None';
   final TextEditingController _nameController = TextEditingController();
 
   void addExercise() async {
-    await db
-        .collection('users')
-        .doc(auth.currentUser?.uid)
-        .collection('exercises')
-        .add({
-      'name': _nameController.text,
-      'nameLowercase': _nameController.text.toLowerCase(),
-      'muscleGroup': muscleGroup,
-    });
-    Future.delayed(Duration.zero, () {
-      widget.addExercise();
-      Navigator.pop(context);
-    });
+    final exerciseState = Provider.of<ExerciseState>(context, listen: false);
+    final newExercise = Exercise(
+      id: '',
+      name: _nameController.text,
+      nameLowercase: _nameController.text.toLowerCase(),
+      muscleGroup: _muscleGroup,
+    );
+
+    await exerciseState.addExercise(newExercise);
+    Navigator.pop(context);
   }
 
   @override
@@ -66,7 +61,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 const Text('Muscle Group'),
                 const Spacer(),
                 DropdownButton(
-                    value: muscleGroup,
+                    value: _muscleGroup,
                     items: const [
                       DropdownMenuItem(
                         value: 'None',
@@ -99,7 +94,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                     ],
                     onChanged: (selectedItem) {
                       setState(() {
-                        muscleGroup = selectedItem!;
+                        _muscleGroup = selectedItem!;
                       });
                     }),
               ],

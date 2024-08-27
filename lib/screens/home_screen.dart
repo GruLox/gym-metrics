@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/state/user_state.dart';
+import 'package:gym_metrics/states/user_state.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);

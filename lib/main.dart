@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gym_metrics/state/exercise_state.dart';
+import 'package:gym_metrics/states/exercise_state.dart';
 import 'package:provider/provider.dart';
 
 import 'package:gym_metrics/firebase/firebase_initializer.dart';
@@ -18,8 +18,8 @@ import 'package:gym_metrics/screens/history_screen.dart';
 import 'package:gym_metrics/screens/home_screen.dart';
 import 'package:gym_metrics/screens/exercises_screen.dart';
 import 'package:gym_metrics/screens/workout_screen.dart';
-import 'package:gym_metrics/state/user_state.dart';
-import 'package:gym_metrics/state/workout_state.dart';
+import 'package:gym_metrics/states/user_state.dart';
+import 'package:gym_metrics/states/workout_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +31,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => WorkoutState()),
         ChangeNotifierProvider(create: (_) => ExerciseState()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

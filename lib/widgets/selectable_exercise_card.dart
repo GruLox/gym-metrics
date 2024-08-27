@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/models/exercise.dart';
 import 'package:gym_metrics/widgets/exercise_card.dart';
 
 class SelectableExerciseCard extends ExerciseCard {
@@ -14,7 +13,7 @@ class SelectableExerciseCard extends ExerciseCard {
           muscleGroup: muscleGroup,
         );
 
-  final void Function(Exercise) selectionCallback;
+  final void Function() selectionCallback;
 
   @override
   State<SelectableExerciseCard> createState() => _SelectableExerciseCardState();
@@ -22,16 +21,10 @@ class SelectableExerciseCard extends ExerciseCard {
 
 class _SelectableExerciseCardState extends State<SelectableExerciseCard> {
   bool isSelected = false;
-  late Exercise exercise;
 
   @override
   void initState() {
     super.initState();
-    exercise = Exercise(
-      id: '', // #TODO: Add id to Exercise model
-      name: widget.name,
-      muscleGroup: widget.muscleGroup,
-    );
   }
 
   @override
@@ -40,9 +33,7 @@ class _SelectableExerciseCardState extends State<SelectableExerciseCard> {
       onTap: () {
         setState(() {
           isSelected = !isSelected;
-          widget.selectionCallback(
-            exercise,
-          );
+          widget.selectionCallback();
         });
       },
       child: Container(

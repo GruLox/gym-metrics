@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/models/exercise.dart';
+import 'package:gym_metrics/widgets/add_exercise_button.dart';
+import 'package:gym_metrics/widgets/add_exercise_header.dart';
+import 'package:gym_metrics/widgets/add_exercise_name_field.dart';
+import 'package:gym_metrics/widgets/muscle_group_dropdown.dart';
 import 'package:provider/provider.dart';
-import 'package:gym_metrics/state/exercise_state.dart';
+import 'package:gym_metrics/states/exercise_state.dart';
 
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({super.key, required this.addExercise});
@@ -17,6 +20,12 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   String _muscleGroup = 'None';
   final TextEditingController _nameController = TextEditingController();
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
   void addExercise() async {
     final exerciseState = Provider.of<ExerciseState>(context, listen: false);
     final newExercise = Exercise(
@@ -26,8 +35,14 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
       muscleGroup: _muscleGroup,
     );
 
-    await exerciseState.addExercise(newExercise);
-    Navigator.pop(context);
+    try {
+      await exerciseState.addExercise(newExercise);
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add exercise: $e')),
+      );
+    }
   }
 
   @override
@@ -41,86 +56,29 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           bottom: 30.0,
         ),
         color: const Color(0xFF101319),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Add Exercise',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 30.0, color: Colors.white),
-            ),
-            const SizedBox(height: 20.0),
-            TextField(
-              controller: _nameController,
-              style: const TextStyle(color: Colors.black),
-              decoration: kWhiteInputDecoration,
-            ),
-            const SizedBox(height: 20.0),
-            Row(
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).viewInsets.bottom,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text('Muscle Group'),
-                const Spacer(),
-                DropdownButton(
-                    value: _muscleGroup,
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'None',
-                        child: Text('None'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Core',
-                        child: Text('Core'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Arms',
-                        child: Text('Arms'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Back',
-                        child: Text('Back'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Chest',
-                        child: Text('Chest'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Legs',
-                        child: Text('Legs'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Shoulders',
-                        child: Text('Shoulders'),
-                      ),
-                    ],
-                    onChanged: (selectedItem) {
+                const AddExerciseHeader(),
+                const SizedBox(height: 20.0),
+                AddExerciseNameField(controller: _nameController),
+                const SizedBox(height: 20.0),
+                MuscleGroupDropdown(
+                    muscleGroup: _muscleGroup,
+                    onChanged: (String? selectedItem) {
                       setState(() {
-                        _muscleGroup = selectedItem!;
+                        _muscleGroup = selectedItem ?? 'None';
                       });
                     }),
+                const SizedBox(height: 20.0),
+                AddExerciseButton(onPressed: addExercise),
               ],
             ),
-            const SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: addExercise,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kPrimaryColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'Add Exercise',
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

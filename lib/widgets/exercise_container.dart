@@ -41,6 +41,14 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
   }
 
   @override
+  void didUpdateWidget(covariant ExerciseContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.weightliftingSet.sets.length != widget.weightliftingSet.sets.length) {
+      setCount = widget.weightliftingSet.sets.length;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<ExerciseSetRow> setRows = [];
 
@@ -60,13 +68,6 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
           },
         ),
       );
-    }
-
-    if (setCount == 0) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        widget.onExerciseRemovedCallback();
-      });
-      return Container();
     }
 
     return SizedBox(

@@ -54,4 +54,15 @@ class WorkoutState with ChangeNotifier {
         .delete();
     fetchWorkoutPlans();
   }
+
+  Future<void> updateWorkoutPlan(WorkoutPlan workoutPlan) async {
+    final docId = workoutPlan.id;
+    await _db
+        .collection('users')
+        .doc(_auth.currentUser?.uid)
+        .collection('workoutPlans')
+        .doc(docId)
+        .update(workoutPlan.toMap());
+    fetchWorkoutPlans();
+  }
 }

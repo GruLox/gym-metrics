@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
+import 'package:gym_metrics/mixins/exercise_management_mixin.dart';
 import 'package:gym_metrics/models/exercise_set.dart';
 import 'package:gym_metrics/models/weightlifting_set.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/widgets/full_workout_plan.dart';
-import 'package:gym_metrics/state/workout_state.dart';
+import 'package:gym_metrics/states/workout_state.dart';
 import 'package:provider/provider.dart';
 
 class AddWorkoutPlanScreen extends StatefulWidget {
@@ -16,28 +17,9 @@ class AddWorkoutPlanScreen extends StatefulWidget {
   State<AddWorkoutPlanScreen> createState() => _AddWorkoutPlanScreenState();
 }
 
-class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
-  String muscleGroup = 'None';
+class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen>
+    with ExerciseManagementMixin {
   final TextEditingController _nameController = TextEditingController();
-  List<WeightliftingSet> exercises = [];
-
-  void addSet(int index, ExerciseSet weightliftingSet) {
-    setState(() {
-      exercises[index].addSet(weightliftingSet);
-    });
-  }
-
-  void removeSet(int index, ExerciseSet weightliftingSet) {
-    setState(() {
-      exercises[index].removeSet(weightliftingSet);
-    });
-  }
-
-  void removeExercise(int index) {
-    setState(() {
-      exercises.removeAt(index);
-    });
-  }
 
   void uploadWorkoutPlan(WorkoutPlan addedWorkoutPlan) async {
     final workoutState = Provider.of<WorkoutState>(context, listen: false);
@@ -86,9 +68,10 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen> {
             const SizedBox(height: 20.0),
             FullWorkoutPlan(
               exercises: exercises,
-              onSetAdded: addSet,
-              onSetRemoved: removeSet,
-              onExerciseRemoved: removeExercise,
+              onSetAdded: onSetAdded,
+              onSetRemoved: onSetRemoved,
+              onExerciseAdded: () => onExerciseAdded(context),
+              onExerciseRemoved: onExerciseRemoved,
               isLocked: true,
             ),
           ],

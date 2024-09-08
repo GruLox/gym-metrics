@@ -6,6 +6,8 @@ class UserState with ChangeNotifier {
   User? _user;
 
   User? get user => _user;
+
+  String get username => _auth.currentUser?.displayName ?? 'No username';
   
 
   UserState() {
@@ -14,6 +16,20 @@ class UserState with ChangeNotifier {
       notifyListeners();
     });
   }
+
+  Future<void> signInWithEmailAndPassword(String email, String password) async {
+    await _auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  Future<void> createUserWithEmailAndPassword(String username, String email, String password) async {
+    final credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    if (credential.user != null) {
+      await credential.user?.updateDisplayName(username);
+      await credential.user?.reload();
+    }
+  }
+
+
 
   Future<void> signOut() async {
     await _auth.signOut();

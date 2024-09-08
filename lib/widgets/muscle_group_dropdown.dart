@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gym_metrics/enums/muscle_group.dart';
 
 class MuscleGroupDropdown extends StatelessWidget {
-  final String muscleGroup;
-  final ValueChanged<String?> onChanged;
+  final MuscleGroup muscleGroup;
+  final ValueChanged<MuscleGroup?> onChanged;
 
   const MuscleGroupDropdown({
     super.key,
@@ -12,45 +13,15 @@ class MuscleGroupDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Text('Muscle Group'),
-        const Spacer(),
-        DropdownButton<String>(
-          value: muscleGroup,
-          items: const [
-            DropdownMenuItem(
-              value: 'None',
-              child: Text('None'),
-            ),
-            DropdownMenuItem(
-              value: 'Core',
-              child: Text('Core'),
-            ),
-            DropdownMenuItem(
-              value: 'Arms',
-              child: Text('Arms'),
-            ),
-            DropdownMenuItem(
-              value: 'Back',
-              child: Text('Back'),
-            ),
-            DropdownMenuItem(
-              value: 'Chest',
-              child: Text('Chest'),
-            ),
-            DropdownMenuItem(
-              value: 'Legs',
-              child: Text('Legs'),
-            ),
-            DropdownMenuItem(
-              value: 'Shoulders',
-              child: Text('Shoulders'),
-            ),
-          ],
-          onChanged: onChanged,
-        ),
-      ],
+    return DropdownButton<MuscleGroup>(
+      value: muscleGroup,
+      onChanged: onChanged,
+      items: MuscleGroup.values.map((MuscleGroup group) {
+        return DropdownMenuItem<MuscleGroup>(
+          value: group,
+          child: Text(group.muscleGroupToString()),
+        );
+      }).toList(),
     );
   }
 }

@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_metrics/states/user_state.dart';
 import 'package:gym_metrics/widgets/email_field.dart';
 import 'package:gym_metrics/widgets/password_field.dart';
 import 'package:gym_metrics/widgets/registration_button.dart';
 import 'package:gym_metrics/widgets/username_field.dart';
-
-FirebaseAuth auth = FirebaseAuth.instance;
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -37,13 +37,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
 
       try {
-        final credential = await auth.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
+        final userState = Provider.of<UserState>(context, listen: false);
+        await userState.createUserWithEmailAndPassword(
+          _usernameController.text,
+          _emailController.text,
+          _passwordController.text,
         );
-        if (credential.user != null) {
-          await auth.currentUser?.updateDisplayName(_usernameController.text);
-          await auth.currentUser?.reload();
+        if (userState.user != null) {
           Navigator.pushReplacementNamed(context, '/');
         }
       } on FirebaseAuthException catch (e) {

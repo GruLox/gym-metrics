@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gym_metrics/enums/muscle_group.dart';
 import 'package:gym_metrics/models/exercise.dart';
 
 class ExerciseState with ChangeNotifier {
@@ -28,7 +29,7 @@ class ExerciseState with ChangeNotifier {
         id: doc.id,
         name: data['name'],
         nameLowercase: data['nameLowercase'],
-        muscleGroup: data['muscleGroup'],
+        muscleGroup: MuscleGroupExtension.fromString(data['muscleGroup']),
       );
     }).toList();
 
@@ -51,7 +52,7 @@ class ExerciseState with ChangeNotifier {
       'id': exercise.id,
       'name': exercise.name,
       'nameLowercase': exercise.nameLowercase,
-      'muscleGroup': exercise.muscleGroup,
+      'muscleGroup': exercise.muscleGroup.muscleGroupToString(),
     }); // Use set method to add the document with the specified ID
 
     fetchExercises();

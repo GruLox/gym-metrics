@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/mixins/exercise_management_mixin.dart';
-import 'package:gym_metrics/models/exercise_set.dart';
-import 'package:gym_metrics/models/weightlifting_set.dart';
+import 'package:gym_metrics/mixins/exercise_set_management_mixin.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/widgets/full_workout_plan.dart';
 import 'package:gym_metrics/states/workout_state.dart';
@@ -18,7 +16,7 @@ class AddWorkoutPlanScreen extends StatefulWidget {
 }
 
 class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen>
-    with ExerciseManagementMixin {
+    with ExerciseSetManagementMixin {
   final TextEditingController _nameController = TextEditingController();
 
   void uploadWorkoutPlan(WorkoutPlan addedWorkoutPlan) async {

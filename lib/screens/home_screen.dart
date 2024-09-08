@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userState = UserState();
-    final user = userState.user;
+    final username = userState.username;
 
     return Scaffold(
       body: Container(
@@ -48,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user?.displayName ?? 'Guest',
+                      username,
                       style: const TextStyle(
                           fontSize: 20.0, fontWeight: FontWeight.bold),
                     ),

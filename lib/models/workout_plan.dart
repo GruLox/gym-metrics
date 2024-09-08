@@ -1,3 +1,4 @@
+import 'package:gym_metrics/enums/muscle_group.dart';
 import 'package:gym_metrics/models/exercise.dart';
 import 'package:gym_metrics/models/exercise_set.dart';
 import 'package:gym_metrics/models/weightlifting_set.dart';
@@ -23,7 +24,7 @@ class WorkoutPlan {
           .map((set) => {
                 'exercise': {
                   'exerciseName': set.exercise.name,
-                  'muscleGroup': set.exercise.muscleGroup,
+                  'muscleGroup': set.exercise.muscleGroup.muscleGroupToString(),
                 },
                 'sets': set.sets
                     .map((exerciseSet) => {
@@ -43,7 +44,7 @@ class WorkoutPlan {
       final Exercise exercise = Exercise(
         id: '',
         name: exerciseData['exerciseName'] as String,
-        muscleGroup: exerciseData['muscleGroup'] as String,
+        muscleGroup: MuscleGroupExtension.fromString(exerciseData['muscleGroup'] as String),
       );
 
       final List<ExerciseSet> sets = (set['sets'] as List<dynamic>).map((exerciseSet) {

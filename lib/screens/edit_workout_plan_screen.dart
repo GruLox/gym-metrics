@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gym_metrics/screens/workout_plan_screen.dart';
+import 'package:gym_metrics/widgets/workout_plan_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/states/workout_state.dart';
-import 'package:gym_metrics/mixins/exercise_management_mixin.dart';
+import 'package:gym_metrics/mixins/exercise_set_management_mixin.dart';
 
 class EditWorkoutPlanScreen extends StatefulWidget {
   const EditWorkoutPlanScreen({Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class EditWorkoutPlanScreen extends StatefulWidget {
   State<EditWorkoutPlanScreen> createState() => _EditWorkoutPlanScreenState();
 }
 
-class _EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> with ExerciseManagementMixin {
+class _EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> with ExerciseSetManagementMixin {
   final TextEditingController _nameController = TextEditingController();
   bool _isLoading = false;
 

@@ -14,17 +14,23 @@ class WorkoutScreen extends StatefulWidget {
 }
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
-  late WorkoutState workoutState;
+  late WorkoutState _workoutState;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    workoutState = Provider.of<WorkoutState>(context, listen: false);
-    workoutState.fetchWorkoutPlans().then((_) {
+    _workoutState = Provider.of<WorkoutState>(context, listen: false);
+    _workoutState.fetchWorkoutPlans().then((_) {
       setState(() {
         _isLoading = false;
       });
+    });
+  }
+
+  void _onWorkoutUpdated() {
+    setState(() {
+      _workoutState.fetchWorkoutPlans();
     });
   }
 
@@ -58,10 +64,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           onWorkoutDeleted: (index) {
                             workoutState.removeWorkoutPlan(index);
                           },
-                          onWorkoutUpdated: () {
-                            workoutState.fetchWorkoutPlans();
-                            setState(() {});
-                          },
+                          onWorkoutUpdated: _onWorkoutUpdated,
                         );
                       },
                     ),

@@ -1,3 +1,4 @@
+import 'package:gym_metrics/mixins/exercise_management_mixin.dart';
 import 'package:gym_metrics/screens/add_exercise_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -15,22 +16,10 @@ class ExerciseSelectionScreen extends StatefulWidget {
       _ExerciseSelectionScreenState();
 }
 
-class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
-  late final ExerciseState _exerciseState;
-  List<Exercise> _exercises = [];
-  List<Exercise> _filteredExercises = [];
+class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> with ExerciseManagementMixin {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
-  List<Exercise> _selectedExercises = [];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _exerciseState = Provider.of<ExerciseState>(context, listen: false);
-      refreshExercises();
-    });
-  }
+  final List<Exercise> _selectedExercises = [];
 
   void selectionCallback(Exercise exercise) {
     setState(() {
@@ -42,33 +31,12 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
     });
   }
 
-  void filterExercises(String query) {
-    setState(() {
-      _filteredExercises = _exercises.where((exercise) {
-        final exerciseName = exercise.name.toLowerCase();
-        final muscleGroup = exercise.muscleGroup.toLowerCase();
-        final searchQuery = query.toLowerCase();
-        return exerciseName.contains(searchQuery) ||
-            muscleGroup.contains(searchQuery);
-      }).toList();
-    });
-  }
-
   void addExercisesToPlan() {
     final newExercises = _selectedExercises.map((exercise) {
       return WeightliftingSet(exercise: exercise);
     }).toList();
 
     Navigator.pop(context, newExercises);
-  }
-
-  void refreshExercises() {
-    _exerciseState.fetchExercises().then((_) {
-      setState(() {
-        _exercises = _exerciseState.exercises;
-        _filteredExercises = _exercises;
-      });
-    });
   }
 
   @override
@@ -110,7 +78,7 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
               setState(
                 () {
                   _isSearching = !_isSearching;
-                  _filteredExercises = _exercises;
+                  filteredExercises = exercises;
                   if (!_isSearching) {
                     _searchController.clear();
                   }
@@ -141,18 +109,18 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
             Expanded(
               child: Consumer<ExerciseState>(
                 builder: (context, exerciseState, child) {
-                  if (_filteredExercises.isEmpty && _isSearching) {
+                  if (filteredExercises.isEmpty && _isSearching) {
                     return const Center(
                       child: Text('No exercises found.'),
                     );
-                  } else if (_filteredExercises.isEmpty) {
+                  } else if (filteredExercises.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   return ListView.builder(
                     padding: EdgeInsets.zero,
-                    itemCount: _filteredExercises.length,
+                    itemCount: filteredExercises.length,
                     itemBuilder: (context, index) {
-                      final exercise = _filteredExercises[index];
+                      final exercise = filteredExercises[index];
                       return SelectableExerciseCard(
                         name: exercise.name,
                         muscleGroup: exercise.muscleGroup,
@@ -169,23 +137,3 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> {
     );
   }
 }
-
-      // AppBar(
-      //   actions: [
-      //     CustomSearchBar(
-      //       isSearching: _isSearching,
-      //       searchController: _searchController,
-      //       onSearchChanged: filterExercises,
-      //       onSearchToggled: () {
-      //         setState(() {
-      //           _isSearching = !_isSearching;
-      //           _filteredExercises = _exercises;
-      //           if (!_isSearching) {
-      //             _searchController.clear();
-      //           }
-      //         });
-      //       },
-      //       onExerciseAdded: refreshExercises,
-      //     ),
-      //   ],
-      // ),

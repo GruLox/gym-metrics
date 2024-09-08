@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
+import 'package:gym_metrics/enums/muscle_group.dart';
 
 const kExerciseIcon = Icons.fitness_center;
 
@@ -12,7 +13,7 @@ class ExerciseCard extends StatefulWidget {
   });
 
   final String name;
-  final String muscleGroup;
+  final MuscleGroup muscleGroup;
   final IconData icon;
 
   @override
@@ -43,7 +44,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 style: const TextStyle(
                     fontSize: 16.0, fontWeight: FontWeight.bold),
               ),
-              Text(widget.muscleGroup),
+              Text(widget.muscleGroup.muscleGroupToString()),
             ],
           ),
         ],

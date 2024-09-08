@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/models/exercise_set.dart';
 import 'package:gym_metrics/models/weightlifting_set.dart';

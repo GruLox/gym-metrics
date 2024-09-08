@@ -1,40 +1,41 @@
+// lib/mixins/exercise_management_mixin.dart
 import 'package:flutter/material.dart';
-import 'package:gym_metrics/models/exercise_set.dart';
-import 'package:gym_metrics/models/weightlifting_set.dart';
+import 'package:gym_metrics/models/exercise.dart';
+import 'package:gym_metrics/states/exercise_state.dart';
+import 'package:provider/provider.dart';
 
 mixin ExerciseManagementMixin<T extends StatefulWidget> on State<T> {
-  List<WeightliftingSet> exercises = [];
+  late ExerciseState _exerciseState;
+  List<Exercise> exercises = [];
+  List<Exercise> filteredExercises = [];
 
-  Future<void> onExerciseAdded(BuildContext context) async {
-    final result = await Navigator.pushNamed(context, '/select-exercises');
-    if (result != null && result is List<WeightliftingSet>) {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _exerciseState = Provider.of<ExerciseState>(context, listen: false);
+      refreshExercises();
+    });
+  }
+
+  void refreshExercises() {
+    _exerciseState.fetchExercises().then((_) {
       setState(() {
-        exercises.addAll(result);
+        exercises = _exerciseState.exercises;
+        filteredExercises = exercises;
       });
-    }
-  }
-
-  void onExerciseRemoved(int index) {
-    print('Removing exercise at index: $index');
-    setState(() {
-      exercises.removeAt(index);
-    });
-    print('Remaining exercises: $exercises');
-  }
-
-  void onSetAdded(int index, ExerciseSet weightliftingSet) {
-    setState(() {
-      exercises[index].addSet(weightliftingSet);
     });
   }
 
-  void onSetRemoved(int index, ExerciseSet weightliftingSet) {
-    print('Removing set: $weightliftingSet from exercise at index: $index');
+  void filterExercises(String query) {
     setState(() {
-      exercises[index].removeSet(weightliftingSet);
-      if (exercises[index].sets.isEmpty) {
-        onExerciseRemoved(index);
-      }
+      filteredExercises = exercises.where((exercise) {
+        final exerciseName = exercise.name.toLowerCase();
+        final muscleGroup = exercise.muscleGroup;
+        final searchQuery = query.toLowerCase();
+        return exerciseName.contains(searchQuery) ||
+            muscleGroup.toString().contains(searchQuery);
+      }).toList();
     });
   }
 }

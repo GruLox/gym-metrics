@@ -1,3 +1,5 @@
+import 'package:gym_metrics/states/user_state.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/widgets/email_field.dart';
@@ -13,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _auth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -34,14 +35,12 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       try {
-        // Perform login logic here
-        final credential = await _auth.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
+        final userState = Provider.of<UserState>(context, listen: false);
+        await userState.signInWithEmailAndPassword(
+          _emailController.text,
+          _passwordController.text,
         );
-        if (credential.user != null) {
-          Navigator.pushReplacementNamed(context, '/');
-        }
+        Navigator.pushReplacementNamed(context, '/');
       } on FirebaseAuthException catch (e) {
         String errorMessage;
         switch (e.code) {

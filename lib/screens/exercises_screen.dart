@@ -1,3 +1,5 @@
+import 'package:gym_metrics/enums/muscle_group.dart';
+import 'package:gym_metrics/mixins/exercise_management_mixin.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
@@ -13,47 +15,10 @@ class ExercisesScreen extends StatefulWidget {
   State<ExercisesScreen> createState() => _ExercisesScreenState();
 }
 
-class _ExercisesScreenState extends State<ExercisesScreen> {
-  late ExerciseState _exerciseState;
-  List<Exercise> _exercises = [];
-  List<Exercise> _filteredExercises = [];
+class _ExercisesScreenState extends State<ExercisesScreen>
+    with ExerciseManagementMixin {
   bool _isSearching = false;
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final exerciseState = Provider.of<ExerciseState>(context, listen: false);
-      exerciseState.fetchExercises().then((_) {
-        setState(() {
-          _exercises = exerciseState.exercises;
-          _filteredExercises = _exercises;
-        });
-      });
-    });
-  }
-
-  void refreshExercises() {
-    _exerciseState.fetchExercises().then((_) {
-      setState(() {
-        _exercises = _exerciseState.exercises;
-        _filteredExercises = _exercises;
-      });
-    });
-  }
-
-  void filterExercises(String query) {
-    setState(() {
-      _filteredExercises = _exercises.where((exercise) {
-        final exerciseName = exercise.name.toLowerCase();
-        final muscleGroup = exercise.muscleGroup.toLowerCase();
-        final searchQuery = query.toLowerCase();
-        return exerciseName.contains(searchQuery) ||
-            muscleGroup.contains(searchQuery);
-      }).toList();
-    });
-  }
+  final _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +35,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
               onSearchToggled: () {
                 setState(() {
                   _isSearching = !_isSearching;
-                  _filteredExercises = _exercises;
+                  filteredExercises = exercises;
                   if (!_isSearching) {
                     _searchController.clear();
                   }
@@ -88,14 +53,13 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
               child: Consumer<ExerciseState>(
                 builder: (context, exerciseState, child) {
                   final exercises = _isSearching
-                      ? _filteredExercises
+                      ? filteredExercises
                       : exerciseState.exercises;
-                  if (_filteredExercises.isEmpty && _isSearching) {
+                  if (filteredExercises.isEmpty && _isSearching) {
                     return const Center(
                       child: Text('No exercises found.'),
                     );
-                  }
-                  else if (exercises.isEmpty) {
+                  } else if (exercises.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   return ExerciseList(exercises: exercises);

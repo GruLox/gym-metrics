@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
+import 'package:gym_metrics/enums/muscle_group.dart';
 import 'package:gym_metrics/widgets/exercise_card.dart';
 
 class SelectableExerciseCard extends ExerciseCard {
   const SelectableExerciseCard({
     super.key,
     required String name,
-    required String muscleGroup,
+    required MuscleGroup muscleGroup,
     required this.selectionCallback,
   }) : super(
           name: name,

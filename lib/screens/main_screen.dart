@@ -18,9 +18,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
+  int _currentIndex = 0;
 
-  static List<Widget> screens = [
+  static final List<Widget> _screens = [
     const HomeScreen(),
     HistoryScreen(
       historyData: [
@@ -76,11 +76,11 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return Scaffold(
-      body: screens[currentIndex],
+      body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: kPrimaryColor,
-        currentIndex: currentIndex,
-        onTap: (index) => setState(() => currentIndex = index),
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

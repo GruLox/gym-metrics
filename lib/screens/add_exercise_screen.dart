@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_metrics/enums/muscle_group.dart';
 import 'package:gym_metrics/models/exercise.dart';
 import 'package:gym_metrics/widgets/add_exercise_button.dart';
 import 'package:gym_metrics/widgets/add_exercise_header.dart';
@@ -17,7 +18,7 @@ class AddExerciseScreen extends StatefulWidget {
 }
 
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
-  String _muscleGroup = 'None';
+  MuscleGroup _muscleGroup = MuscleGroup.none;
   final TextEditingController _nameController = TextEditingController();
 
   @override
@@ -69,9 +70,9 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 const SizedBox(height: 20.0),
                 MuscleGroupDropdown(
                     muscleGroup: _muscleGroup,
-                    onChanged: (String? selectedItem) {
+                    onChanged: (MuscleGroup? selectedItem) {
                       setState(() {
-                        _muscleGroup = selectedItem ?? 'None';
+                        _muscleGroup = selectedItem ?? MuscleGroup.none;
                       });
                     }),
                 const SizedBox(height: 20.0),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/states/workout_state.dart';
+import 'package:gym_metrics/states/workout_plan_state.dart';
 import 'package:gym_metrics/widgets/my_templates_header.dart';
 import 'package:gym_metrics/widgets/quick_start_button.dart';
 import 'package:gym_metrics/widgets/workout_plans_list.dart';
@@ -14,13 +14,13 @@ class WorkoutScreen extends StatefulWidget {
 }
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
-  late WorkoutState _workoutState;
+  late WorkoutPlanState _workoutState;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _workoutState = Provider.of<WorkoutState>(context, listen: false);
+    _workoutState = Provider.of<WorkoutPlanState>(context, listen: false);
     _workoutState.fetchWorkoutPlans().then((_) {
       setState(() {
         _isLoading = false;
@@ -57,7 +57,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                   const QuickStartButton(),
                   const MyTemplatesHeader(),
                   Expanded(
-                    child: Consumer<WorkoutState>(
+                    child: Consumer<WorkoutPlanState>(
                       builder: (context, workoutState, child) {
                         return WorkoutPlansList(
                           workoutPlans: workoutState.workoutPlans,

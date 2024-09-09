@@ -22,31 +22,7 @@ class _MainScreenState extends State<MainScreen> {
 
   static final List<Widget> _screens = [
     const HomeScreen(),
-    HistoryScreen(
-      historyData: [
-        HistoryData(
-          title: 'Push',
-          date: 'September 1',
-          duration: '10m',
-          weight: '100kg',
-          prs: '3 PRs',
-        ),
-        HistoryData(
-          title: 'Pull',
-          date: 'September 2',
-          duration: '15m',
-          weight: '120kg',
-          prs: '5 PRs',
-        ),
-        HistoryData(
-          title: 'Legs',
-          date: 'September 3',
-          duration: '20m',
-          weight: '150kg',
-          prs: '7 PRs',
-        ),
-      ],
-    ),
+    const HistoryScreen(),
     const WorkoutScreen(),
     const ExercisesScreen(),
   ];

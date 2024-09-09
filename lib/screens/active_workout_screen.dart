@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gym_metrics/models/finished_workout.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
+import 'package:gym_metrics/states/finished_workout_state.dart';
 import 'package:gym_metrics/widgets/workout_plan_screen.dart';
 import 'package:gym_metrics/mixins/exercise_set_management_mixin.dart';
 
@@ -13,6 +15,7 @@ class ActiveWorkoutScreen extends StatefulWidget {
 class _ActiveWorkoutScreenState extends State<ActiveWorkoutScreen>
     with ExerciseSetManagementMixin {
   late WorkoutPlan _workoutPlan;
+  final FinishedWorkoutState _finishedWorkoutState = FinishedWorkoutState();
 
   @override
   void didChangeDependencies() {
@@ -24,7 +27,13 @@ class _ActiveWorkoutScreenState extends State<ActiveWorkoutScreen>
   }
 
   void onSave() {
-    // Implement save functionality
+    final finishedWorkout = FinishedWorkout.fromWorkoutPlan(
+      workoutPlan: _workoutPlan,
+      date: DateTime.now(),
+      duration: 90,
+    );
+    _finishedWorkoutState.addFinishedWorkout(finishedWorkout);
+    Navigator.pop(context);
   }
 
   @override

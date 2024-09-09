@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 
-class WorkoutState with ChangeNotifier {
+class WorkoutPlanState with ChangeNotifier {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<WorkoutPlan> _workoutPlans = [];
 
   List<WorkoutPlan> get workoutPlans => _workoutPlans;
 
-  WorkoutState() {
+  WorkoutPlanState() {
     fetchWorkoutPlans();
   }
 

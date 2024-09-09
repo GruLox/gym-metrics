@@ -1,6 +1,7 @@
 class ExerciseSet {
-  final int weight;
-  final int reps;
+  int weight;
+  int reps;
+  bool isPR;
 
-  const ExerciseSet({this.weight = 0, this.reps = 0});
+  ExerciseSet({this.weight = 0, this.reps = 0, this.isPR = false});
 }

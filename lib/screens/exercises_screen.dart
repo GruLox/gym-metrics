@@ -1,10 +1,8 @@
-import 'package:gym_metrics/enums/muscle_group.dart';
 import 'package:gym_metrics/mixins/exercise_management_mixin.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/widgets/custom_search_bar.dart';
-import 'package:gym_metrics/models/exercise.dart';
 import 'package:gym_metrics/widgets/exercise_list.dart';
 import 'package:gym_metrics/states/exercise_state.dart';
 

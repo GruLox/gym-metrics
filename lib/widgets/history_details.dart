@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 
 class HistoryDetails extends StatelessWidget {
-  final String duration;
-  final String weight;
-  final String prs;
+  final int duration;
+  final int totalWeightLifted;
+  final int prs;
 
   const HistoryDetails({
     super.key,
     required this.duration,
-    required this.weight,
+    required this.totalWeightLifted,
     required this.prs,
   });
+
+  String durationToString(int durationInMinutes) {
+    final int hours = durationInMinutes ~/ 60;
+    final int minutes = durationInMinutes % 60;
+    return '${hours.toString()}h ${minutes.toString()}m';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,7 @@ class HistoryDetails extends StatelessWidget {
         const Icon(Icons.schedule, color: Colors.grey),
         const SizedBox(width: 5.0),
         Text(
-          duration,
+          durationToString(duration),
           style: const TextStyle(
             fontSize: 14.0,
             color: Colors.grey,
@@ -29,7 +35,7 @@ class HistoryDetails extends StatelessWidget {
         const Icon(Icons.monitor_weight_outlined, color: Colors.grey),
         const SizedBox(width: 5.0),
         Text(
-          weight,
+          '$totalWeightLifted kg',
           style: const TextStyle(
             fontSize: 14.0,
             color: Colors.grey,
@@ -39,7 +45,7 @@ class HistoryDetails extends StatelessWidget {
         const Icon(Icons.emoji_events_outlined, color: Colors.grey),
         const SizedBox(width: 5.0),
         Text(
-          prs,
+          '${prs.toString()} PRs',
           style: const TextStyle(
             fontSize: 14.0,
             color: Colors.grey,

@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/models/history_data.dart';
+import 'package:gym_metrics/states/finished_workout_state.dart';
 import 'package:gym_metrics/widgets/history_card.dart';
+import 'package:provider/provider.dart';
 
-class HistoryScreen extends StatelessWidget {
-  final List<HistoryData> _historyData;
-  final bool _isLoading;
-  final String? _errorMessage;
+class HistoryScreen extends StatefulWidget {
+  const HistoryScreen({Key? key}) : super(key: key);
 
-  const HistoryScreen(
-      {super.key,
-      required List<HistoryData> historyData,
-      bool isLoading = false,
-      String? errorMessage})
-      : _errorMessage = errorMessage,
-        _isLoading = isLoading,
-        _historyData = historyData;
+  @override
+  State<HistoryScreen> createState() => _HistoryScreenState();
+}
+
+class _HistoryScreenState extends State<HistoryScreen> {
+  final FinishedWorkoutState _finishedWorkoutState = FinishedWorkoutState();
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _finishedWorkoutState.fetchFinishedWorkouts().then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,22 +39,26 @@ class HistoryScreen extends StatelessWidget {
             ),
             const Text('History', style: TextStyle(fontSize: 40.0)),
             const SizedBox(height: 20.0),
-            if (_isLoading)
-              const Center(child: CircularProgressIndicator())
-            else if (_errorMessage != null)
-              Center(child: Text(_errorMessage!))
-            else if (_historyData.isEmpty)
-              const Center(child: Text('No history data available.'))
-            else
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: _historyData
-                        .map((data) => HistoryCard(data: data))
-                        .toList(),
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Consumer<FinishedWorkoutState>(
+                    builder: (context, finishedWorkoutState, child) {
+                      if (finishedWorkoutState.finishedWorkouts.isEmpty) {
+                        return const Center(
+                            child: Text('No history data available.'));
+                      }
+                      return Flexible(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: finishedWorkoutState.finishedWorkouts
+                                .map((data) =>
+                                    HistoryCard(finishedWorkout: data))
+                                .toList(),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ),
-              ),
           ],
         ),
       ),

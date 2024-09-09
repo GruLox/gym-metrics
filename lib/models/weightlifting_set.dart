@@ -2,13 +2,14 @@ import 'package:gym_metrics/models/exercise.dart';
 import 'package:gym_metrics/models/exercise_set.dart';
 
 class WeightliftingSet {
-   WeightliftingSet({
-    required this.exercise,
-    List<ExerciseSet>? sets,
-  }) : sets = sets ?? [const ExerciseSet()];
-
   final Exercise exercise;
   List<ExerciseSet> sets;
+  
+  WeightliftingSet({
+    required this.exercise,
+    List<ExerciseSet>? sets,
+  }) : sets = sets ?? [ExerciseSet()];
+
 
   void addSet(ExerciseSet set) {
     sets.add(set);

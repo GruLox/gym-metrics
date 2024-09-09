@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gym_metrics/widgets/workout_plan_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
-import 'package:gym_metrics/states/workout_state.dart';
+import 'package:gym_metrics/states/workout_plan_state.dart';
 import 'package:gym_metrics/mixins/exercise_set_management_mixin.dart';
 
 class EditWorkoutPlanScreen extends StatefulWidget {
@@ -33,7 +33,7 @@ class _EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> with Exer
     });
 
     try {
-      final workoutState = Provider.of<WorkoutState>(context, listen: false);
+      final workoutState = Provider.of<WorkoutPlanState>(context, listen: false);
       await workoutState.updateWorkoutPlan(workoutPlan);
       Navigator.pop(context, workoutPlan);
     } catch (e) {

@@ -3,7 +3,7 @@ import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/mixins/exercise_set_management_mixin.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/widgets/full_workout_plan.dart';
-import 'package:gym_metrics/states/workout_state.dart';
+import 'package:gym_metrics/states/workout_plan_state.dart';
 import 'package:provider/provider.dart';
 
 class AddWorkoutPlanScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen>
   final TextEditingController _nameController = TextEditingController();
 
   void uploadWorkoutPlan(WorkoutPlan addedWorkoutPlan) async {
-    final workoutState = Provider.of<WorkoutState>(context, listen: false);
+    final workoutState = Provider.of<WorkoutPlanState>(context, listen: false);
     await workoutState.addWorkoutPlan(addedWorkoutPlan);
   }
 

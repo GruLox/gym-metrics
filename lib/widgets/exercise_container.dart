@@ -42,7 +42,8 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
   @override
   void didUpdateWidget(covariant ExerciseContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.weightliftingSet.sets.length != widget.weightliftingSet.sets.length) {
+    if (oldWidget.weightliftingSet.sets.length !=
+        widget.weightliftingSet.sets.length) {
       setCount = widget.weightliftingSet.sets.length;
     }
   }
@@ -56,6 +57,7 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
         ExerciseSetRow(
           isLocked: widget.isLocked,
           setNumber: i + 1,
+          exerciseSet: widget.weightliftingSet.sets[i],
           onSetDismissedCallback: (int setNumber) {
             setState(() {
               setCount--;
@@ -87,7 +89,7 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                     setCount++;
                     widget.onSetAddedCallback(
                       widget.index,
-                      const ExerciseSet(),
+                      ExerciseSet(),
                     );
                   });
                 },

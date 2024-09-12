@@ -4,6 +4,11 @@ import 'package:gym_metrics/models/exercise_set.dart';
 class WeightliftingSet {
   final Exercise exercise;
   List<ExerciseSet> sets;
+  ExerciseSet get bestSet {
+    return sets.reduce((current, next) {
+      return current.oneRepMax > next.oneRepMax ? current : next;
+    });
+  } 
   
   WeightliftingSet({
     required this.exercise,

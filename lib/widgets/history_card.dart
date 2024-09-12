@@ -8,7 +8,7 @@ class HistoryCard extends StatelessWidget {
   const HistoryCard({super.key, required this.finishedWorkout});
 
   String toHumanReadableDate(DateTime date) {
-    const MONTHS =  <int, String>{
+    const MONTHS = <int, String>{
       1: 'January',
       2: 'February',
       3: 'March',
@@ -31,7 +31,8 @@ class HistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print(finishedWorkout.toMap());
-    print('${finishedWorkout.exerciseList[0].exercise.id} ${finishedWorkout.exerciseList[1].exercise.name}');
+    print(
+        '${finishedWorkout.exerciseList[0].exercise.id} ${finishedWorkout.exerciseList[1].exercise.name}');
 
     return Container(
       width: double.infinity,
@@ -62,6 +63,45 @@ class HistoryCard extends StatelessWidget {
             duration: finishedWorkout.duration,
             totalWeightLifted: finishedWorkout.totalWeightLifted,
             prs: finishedWorkout.prs,
+          ),
+          const SizedBox(height: 10.0),
+          const Row(
+            children: [
+              Text(
+                'Exercises',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Spacer(),
+              Text(
+                'Best set',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10.0),
+          Column(
+            children: finishedWorkout.exerciseList
+                .map((exercise) => Row(
+                      children: [
+                        Text(
+                          '${exercise.sets.length} x ${exercise.exercise.name}',
+                          style: const TextStyle(fontSize: 14.0),
+                        ),
+                        const Spacer(),
+                        Text(
+                          exercise.bestSet.toString(),
+
+                          style: const TextStyle(fontSize: 14.0),
+                        ),
+                      ],
+                    ))
+                .toList(),
           ),
         ],
       ),

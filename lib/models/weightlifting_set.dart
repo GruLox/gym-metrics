@@ -18,10 +18,17 @@ class WeightliftingSet {
 
   void addSet(ExerciseSet set) {
     sets.add(set);
+    exercise.updateBestSets(set);
   }
 
   void removeSet(ExerciseSet set) {
     sets.remove(set);
+    if (sets.isEmpty) {
+      exercise.bestWeightSet = null;
+      exercise.bestRepsSet = null;
+      exercise.bestOneRepMaxSet = null;
+    }
+    exercise.updateBestSets(bestSet);
   }
 
   void setSets(List<ExerciseSet> sets) {

@@ -12,6 +12,10 @@ class ExerciseSet {
     return (weight * (1 + 0.0333 * reps)).ceil();
   }
 
+  bool isWeightPR(int bestWeight) => weight > bestWeight;
+  bool isRepsPR(int bestReps) => reps > bestReps;
+  bool isOneRepMaxPR(int bestOneRepMax) => oneRepMax > bestOneRepMax;
+
   @override
   String toString() {
     return '$weight x $reps';

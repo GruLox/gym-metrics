@@ -18,6 +18,25 @@ class ExerciseSet {
 
   @override
   String toString() {
-    return '$weight x $reps';
+    if (reps == 0 && weight == 0) {
+      return '-';
+    }
+    return '$weight kg x $reps';
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'weight': weight,
+      'reps': reps,
+      'pr': isPR,
+    };
+  }
+
+  factory ExerciseSet.fromMap(Map<String, dynamic> map) {
+    return ExerciseSet(
+      weight: map['weight'] as int,
+      reps: map['reps'] as int,
+      isPR: map['pr'] as bool,
+    );
   }
 }

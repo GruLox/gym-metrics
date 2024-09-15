@@ -70,13 +70,13 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
         child: Row(
           children: [
             SetNumberDisplay(setNumber: widget.setNumber),
-            const Expanded(
+             Expanded(
               flex: 4,
-              child: Center(child: Text('-')),
+              child: Center(child: Text(widget.exerciseSet.toString() )),
             ),
-            WeightInput(controller: _weightController),
+            WeightInput(controller: _weightController, startingWeight: widget.exerciseSet.weight),
             const SizedBox(width: 5.0),
-            RepsInput(controller: _repsController),
+            RepsInput(controller: _repsController, startingReps: widget.exerciseSet.reps),
             CompletionIcon(
               isLocked: widget.isLocked,
               isCompleted: _isCompleted,

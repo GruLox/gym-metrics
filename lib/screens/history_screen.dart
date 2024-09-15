@@ -25,6 +25,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
     });
   }
 
+  void refreshFinishedWorkouts() {
+    setState(() {
+      _isLoading = true;
+    });
+    _finishedWorkoutState.fetchFinishedWorkouts().then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,8 +62,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: finishedWorkoutState.finishedWorkouts
-                                .map((data) =>
-                                    HistoryCard(finishedWorkout: data))
+                                .map((data) => HistoryCard(
+                                      finishedWorkout: data,
+                                      onRefresh: refreshFinishedWorkouts,
+                                    ))
                                 .toList(),
                           ),
                         ),

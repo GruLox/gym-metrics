@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gym_metrics/screens/edit_finished_workout_screen.dart';
 import 'package:gym_metrics/states/exercise_state.dart';
 import 'package:gym_metrics/states/finished_workout_state.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_metrics/firebase/firebase_initializer.dart';
-import 'package:gym_metrics/models/history_data.dart';
 import 'package:gym_metrics/screens/active_workout_screen.dart';
 import 'package:gym_metrics/screens/add_workout_plan_screen.dart';
 import 'package:gym_metrics/screens/edit_workout_plan_screen.dart';
@@ -56,6 +56,7 @@ class _MyAppState extends State<MyApp> {
         '/workout': (context) => const WorkoutScreen(),
         '/add-workout-plan': (context) => const AddWorkoutPlanScreen(),
         '/edit-workout-plan': (context) => const EditWorkoutPlanScreen(),
+        '/edit-finished-workout': (context) => EditFinishedWorkoutScreen(),
         '/workout-plan-start': (context) => const WorkoutPlanStartScreen(),
         '/active_workout': (context) => const ActiveWorkoutScreen(),
         '/exercises': (context) => const ExercisesScreen(),
@@ -63,6 +64,7 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/settings': (context) => const SettingsScreen(),
+
       },
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF081316),

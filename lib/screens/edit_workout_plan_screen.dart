@@ -15,15 +15,16 @@ class EditWorkoutPlanScreen extends StatefulWidget {
 class _EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> with ExerciseSetManagementMixin {
   final TextEditingController _nameController = TextEditingController();
   bool _isLoading = false;
+  late WorkoutPlan _workoutPlan;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final workoutPlan =
+     _workoutPlan =
         ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
-    _nameController.text = workoutPlan.name;
+    _nameController.text = _workoutPlan.name;
     if (exercises.isEmpty) {
-      exercises = workoutPlan.exerciseList.reversed.toList();
+      exercises = _workoutPlan.exerciseList.reversed.toList();
     }
   }
 
@@ -46,6 +47,14 @@ class _EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> with Exer
         _isLoading = false;
       });
     }
+  }
+
+  @override
+  void onExerciseRemoved(int index) {
+    setState(() {
+      exercises.removeAt(index);
+    });
+    _workoutPlan.exerciseList = exercises;
   }
 
   void onSave() {

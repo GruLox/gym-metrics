@@ -24,6 +24,7 @@ class FinishedWorkoutState with ChangeNotifier {
           .collection('users')
           .doc(_auth.currentUser?.uid)
           .collection('workouts')
+          .orderBy('date', descending: true)
           .get();
 
       _finishedWorkouts =
@@ -80,26 +81,37 @@ class FinishedWorkoutState with ChangeNotifier {
 
       for (var set in weightLiftingSet.sets) {
         final setDocRef = exerciseDocRef.collection('sets').doc();
-        await setDocRef.set({
-          'weight': set.weight,
-          'reps': set.reps,
-          'pr': set.isPR,
-        });
+        await setDocRef.set(set.toMap());
       }
     }
 
     fetchFinishedWorkouts();
   }
 
-  Future<void> removeFinishedWorkout(int index) async {
-    final docId = _finishedWorkouts[index].id;
-    await _db
-        .collection('users')
-        .doc(_auth.currentUser?.uid)
-        .collection('workouts')
-        .doc(docId)
-        .delete();
-    fetchFinishedWorkouts();
+  Future<void> removeFinishedWorkout(String id) async {
+    try {
+      final docId = _finishedWorkouts.firstWhere((workout) => workout.id == id).id;
+      _finishedWorkouts.removeWhere((workout) => workout.id == id);
+      await _db
+          .collection('users')
+          .doc(_auth.currentUser?.uid)
+          .collection('workouts')
+          .doc(docId)
+          .delete();
+      
+      // Remove best sets from exercises and update them in the database
+      for (var workout in _finishedWorkouts) {
+        for (var weightLiftingSet in workout.exerciseList) {
+          for (var set in weightLiftingSet.sets) {
+            await weightLiftingSet.exercise.updateBestSets(set);
+          }
+        }
+      }
+
+      notifyListeners();
+    } catch (e) {
+      print('Error removing finished workout: $e');
+    }
   }
 
   Future<void> updateFinishedWorkout(FinishedWorkout workout) async {
@@ -112,7 +124,16 @@ class FinishedWorkoutState with ChangeNotifier {
         .update(workout.toMap());
     fetchFinishedWorkouts();
   }
+
+  Future<void> updateBestSetsOnSave(FinishedWorkout workout) async {
+    for (var weightLiftingSet in workout.exerciseList) {
+      for (var set in weightLiftingSet.sets) {
+        await weightLiftingSet.exercise.updateBestSets(set);
+      }
+    }
+  }
 }
+
 
   Future<List<WeightliftingSet>> _fetchExerciseList(
       DocumentReference workoutRef) async {

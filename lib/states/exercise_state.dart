@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gym_metrics/enums/muscle_group.dart';
 import 'package:gym_metrics/models/exercise.dart';
+import 'package:gym_metrics/models/exercise_set.dart';
 
 class ExerciseState with ChangeNotifier {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -30,6 +31,15 @@ class ExerciseState with ChangeNotifier {
         name: data['name'],
         nameLowercase: data['nameLowercase'],
         muscleGroup: MuscleGroupExtension.fromString(data['muscleGroup']),
+        bestWeightSet: data['bestWeightSet'] != null
+            ? ExerciseSet.fromMap(data['bestWeightSet'])
+            : null,
+        bestRepsSet: data['bestRepsSet'] != null
+            ? ExerciseSet.fromMap(data['bestRepsSet'])
+            : null,
+        bestOneRepMaxSet: data['bestOneRepMaxSet'] != null
+            ? ExerciseSet.fromMap(data['bestOneRepMaxSet'])
+            : null,
       );
     }).toList();
 
@@ -43,8 +53,7 @@ class ExerciseState with ChangeNotifier {
         .collection('exercises')
         .doc(); // Generate a new document reference with a unique ID
 
-    exercise.nameLowercase =
-        exercise.name.toLowerCase(); 
+    exercise.nameLowercase = exercise.name.toLowerCase();
 
     exercise.id = docRef.id;
 
@@ -67,5 +76,19 @@ class ExerciseState with ChangeNotifier {
         .doc(docId)
         .delete();
     fetchExercises();
+  }
+
+  Future<void> updatePRs(Exercise exercise) async {
+    final docRef = _db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('exercises')
+        .doc(exercise.id);
+
+    await docRef.update({
+      'bestWeightSet': exercise.bestWeightSet?.toMap(),
+      'bestRepsSet': exercise.bestRepsSet?.toMap(),
+      'bestOneRepMaxSet': exercise.bestOneRepMaxSet?.toMap(),
+    });
   }
 }

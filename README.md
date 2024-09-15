@@ -1,17 +1,51 @@
-# gym_metrics
+# GymMetrics
 
-A new Flutter project.
+![GymMetrics Logo](assets/icon/icon.jpg)
+
+## Overview
+
+**GymMetrics** is a comprehensive Flutter application designed to help you track and manage your workout routines. Whether you're a fitness enthusiast or a professional athlete, GymMetrics provides the tools you need to monitor your progress and achieve your fitness goals.
+
+## Features
+
+- **Workout Plans**: Create, edit, and manage your workout plans.
+- **Exercise Tracking**: Log your exercises, sets, and reps.
+- **Progress Monitoring**: Visualize your progress with detailed charts and statistics.
+- **Customizable Templates**: Use and customize workout templates to fit your needs.
+- **Cross-Platform**: Available on Android, iOS, Web, and Desktop.
+
+## Screenshots
+
+<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+    <img src="assets/screenshots/history_screen.png" alt="History" width="300"/>
+    <img src="assets/screenshots/workout_screen.png" alt="Workout Plans" width="300"/>
+</div>
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- [Flutter SDK](https://flutter.dev/docs/get-started/install)
+- [Android Studio](https://developer.android.com/studio) or [Xcode](https://developer.apple.com/xcode/) for mobile development
+- [Visual Studio Code](https://code.visualstudio.com/) (recommended IDE)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# gym-metrics
+1. **Clone the repository:**
+
+    ```sh
+    git clone https://github.com/yourusername/gym_metrics.git
+    cd gym_metrics
+    ```
+
+2. **Install dependencies:**
+
+    ```sh
+    flutter pub get
+    ```
+
+3. **Run the app:**
+
+    ```sh
+    flutter run
+    ```

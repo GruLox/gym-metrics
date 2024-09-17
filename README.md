@@ -12,7 +12,7 @@
 - **Exercise Tracking**: Log your exercises, sets, and reps.
 - **Progress Monitoring**: Visualize your progress with detailed charts and statistics.
 - **Customizable Templates**: Use and customize workout templates to fit your needs.
-- **Cross-Platform**: Available on Android, iOS, Web, and Desktop.
+- **Cross-Platform**: Available on Android and iOS.
 
 ## Screenshots
 

@@ -69,22 +69,30 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
         background: const DismissBackground(),
         child: Row(
           children: [
-            SetNumberDisplay(setNumber: widget.setNumber),
-             Expanded(
+            Expanded(flex: 2, child: SetNumberDisplay(setNumber: widget.setNumber)),
+            Expanded(
               flex: 4,
-              child: Center(child: Text(widget.exerciseSet.toString() )),
+              child: Text(
+                widget.exerciseSet.toString(),
+                textAlign: TextAlign.center,
+              ),
             ),
-            WeightInput(controller: _weightController, startingWeight: widget.exerciseSet.weight),
-            const SizedBox(width: 5.0),
-            RepsInput(controller: _repsController, startingReps: widget.exerciseSet.reps),
-            CompletionIcon(
-              isLocked: widget.isLocked,
-              isCompleted: _isCompleted,
-              onPressed: () {
-                setState(() {
-                  if (!widget.isLocked) _isCompleted = !_isCompleted;
-                });
-              },
+            Expanded(flex: 5, child: WeightInput(controller: _weightController, startingWeight: widget.exerciseSet.weight)),
+            Expanded(flex: 5, child: RepsInput(controller: _repsController, startingReps: widget.exerciseSet.reps)),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 5.0),
+                child: CompletionIcon(
+                  isLocked: widget.isLocked,
+                  isCompleted: _isCompleted,
+                  onPressed: () {
+                    setState(() {
+                      if (!widget.isLocked) _isCompleted = !_isCompleted;
+                    });
+                  },
+                ),
+              ),
             ),
           ],
         ),

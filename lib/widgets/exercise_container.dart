@@ -50,23 +50,27 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
 
   @override
   Widget build(BuildContext context) {
-    List<ExerciseSetRow> setRows = [];
+    List<TableRow> setRows = [];
 
     for (int i = 0; i < setCount; i++) {
       setRows.add(
-        ExerciseSetRow(
-          isLocked: widget.isLocked,
-          setNumber: i + 1,
-          exerciseSet: widget.weightliftingSet.sets[i],
-          onSetDismissedCallback: (int setNumber) {
-            setState(() {
-              setCount--;
-              widget.onSetRemovedCallback(
-                widget.index,
-                widget.weightliftingSet.sets[setNumber - 1],
-              );
-            });
-          },
+        TableRow(
+          children: [
+            ExerciseSetRow(
+              isLocked: widget.isLocked,
+              setNumber: i + 1,
+              exerciseSet: widget.weightliftingSet.sets[i],
+              onSetDismissedCallback: (int setNumber) {
+                setState(() {
+                  setCount--;
+                  widget.onSetRemovedCallback(
+                    widget.index,
+                    widget.weightliftingSet.sets[setNumber - 1],
+                  );
+                });
+              },
+            ),
+          ],
         ),
       );
     }
@@ -82,7 +86,19 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
           Column(
             children: [
               const ExerciseLabels(),
-              ...setRows,
+              Table(
+                border: TableBorder.all(color: Colors.white),
+                columnWidths: const {
+                  0: FlexColumnWidth(2),
+                  1: FixedColumnWidth(10.0),
+                  2: FlexColumnWidth(4),
+                  3: FlexColumnWidth(5),
+                  4: FixedColumnWidth(10.0),
+                  5: FlexColumnWidth(5),
+                  6: FlexColumnWidth(2),
+                },
+                children: setRows,
+              ),
               TextButton(
                 onPressed: () {
                   setState(() {
@@ -97,9 +113,9 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                   'ADD SET',
                   style: TextStyle(fontSize: 16.0, color: kPrimaryColor),
                 ),
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

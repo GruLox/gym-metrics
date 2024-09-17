@@ -7,53 +7,52 @@ class ExerciseLabels extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Table(
+      border: TableBorder.all(color: Colors.white),
+      columnWidths: const {
+        0: FlexColumnWidth(2),
+        1: FixedColumnWidth(10.0),
+        2: FlexColumnWidth(4),
+        3: FlexColumnWidth(5),
+        4: FixedColumnWidth(10.0),
+        5: FlexColumnWidth(5),
+        6: FlexColumnWidth(2),
+      },
       children: [
-        const Expanded(
-          flex: 2,
-          child: Text(
-            'SET',
-            style: TextStyle(
-              fontSize: 12.0,
+        TableRow(
+          children: [
+            const Text(
+              'SET',
+              style: TextStyle(
+                fontSize: 12.0,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(width: 10.0),
-        const Expanded(
-          flex: 4,
-          child: Text(
-            'PREVIOUS',
-            style: TextStyle(
-              fontSize: 12.0,
+            const SizedBox.shrink(),
+            const Text(
+              'PREVIOUS',
+              style: TextStyle(
+                fontSize: 12.0,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const Expanded(
-          flex: 5,
-          child: Text(
-            'KG',
-            style: TextStyle(
-              fontSize: 12.0,
+            const Text(
+              'KG',
+              style: TextStyle(
+                fontSize: 12.0,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(width: 10.0),
-        const Expanded(
-          flex: 5,
-          child: Text(
-            'REPS',
-            style: TextStyle(
-              fontSize: 12.0,
+            const SizedBox.shrink(),
+            const Text(
+              'REPS',
+              style: TextStyle(
+                fontSize: 12.0,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Container(), // Empty container for spacing
+            Container(), // Empty container for spacing
+          ],
         ),
       ],
     );

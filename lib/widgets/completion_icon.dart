@@ -14,6 +14,7 @@ class CompletionIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return IconButton(
       iconSize: 40.0,
       icon: Icon(

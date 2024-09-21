@@ -80,18 +80,15 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
             Expanded(flex: 5, child: WeightInput(controller: _weightController, startingWeight: widget.exerciseSet.weight)),
             Expanded(flex: 5, child: RepsInput(controller: _repsController, startingReps: widget.exerciseSet.reps)),
             Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 5.0),
-                child: CompletionIcon(
-                  isLocked: widget.isLocked,
-                  isCompleted: _isCompleted,
-                  onPressed: () {
-                    setState(() {
-                      if (!widget.isLocked) _isCompleted = !_isCompleted;
-                    });
-                  },
-                ),
+              flex: 3,
+              child: CompletionIcon(
+                isLocked: widget.isLocked,
+                isCompleted: _isCompleted,
+                onPressed: () {
+                  setState(() {
+                    if (!widget.isLocked) _isCompleted = !_isCompleted;
+                  });
+                },
               ),
             ),
           ],

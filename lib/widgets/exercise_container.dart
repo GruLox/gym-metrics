@@ -90,12 +90,10 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                 border: TableBorder.all(color: Colors.white),
                 columnWidths: const {
                   0: FlexColumnWidth(2),
-                  1: FixedColumnWidth(10.0),
                   2: FlexColumnWidth(4),
                   3: FlexColumnWidth(5),
-                  4: FixedColumnWidth(10.0),
                   5: FlexColumnWidth(5),
-                  6: FlexColumnWidth(2),
+                  6: FlexColumnWidth(3),
                 },
                 children: setRows,
               ),

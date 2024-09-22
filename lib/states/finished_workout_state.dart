@@ -19,78 +19,87 @@ class FinishedWorkoutState with ChangeNotifier {
   }
 
   Future<void> fetchFinishedWorkouts() async {
-    try {
-      final workoutSnapshot = await _db
-          .collection('users')
-          .doc(_auth.currentUser?.uid)
-          .collection('workouts')
-          .orderBy('date', descending: true)
-          .get();
+  final workoutSnapshot = await _db
+      .collection('users')
+      .doc(_auth.currentUser?.uid)
+      .collection('workouts')
+      .orderBy('date', descending: true)
+      .get();
 
-      _finishedWorkouts =
-          await Future.wait(workoutSnapshot.docs.map((workoutDoc) async {
-        final workoutData = workoutDoc.data();
+  _finishedWorkouts = workoutSnapshot.docs.map((workoutDoc) {
+    final workoutData = workoutDoc.data();
 
-        // Check if required fields exist
-        if (!workoutData.containsKey('name') ||
-            !workoutData.containsKey('date') ||
-            !workoutData.containsKey('duration')) {
-          throw Exception('Invalid workout data');
-        }
-
-        final exerciseList = await _fetchExerciseList(workoutDoc.reference);
-
-        return FinishedWorkout(
-          id: workoutDoc.id,
-          name: workoutData['name'] as String,
-          exerciseList: exerciseList,
-          workoutNote: workoutData['workoutNote'] as String?,
-          date: (workoutData['date'] as Timestamp).toDate(),
-          duration: workoutData['duration'] as int? ?? 0,
-        );
-      }).toList());
-
-      notifyListeners();
-    } catch (e) {
-      // Handle errors appropriately
-      print('Error fetching finished workouts: $e');
+    // Check if required fields exist
+    if (!workoutData.containsKey('name') ||
+        !workoutData.containsKey('date') ||
+        !workoutData.containsKey('duration') ||
+        !workoutData.containsKey('exerciseList')) {
+      throw Exception('Invalid workout data');
     }
-  }
 
+    // Map exerciseList field directly
+    final exerciseList = (workoutData['exerciseList'] as List<dynamic>).map((exerciseData) {
+      final exercise = exerciseData['exercise'];
+      return WeightliftingSet(
+        exercise: Exercise(
+          id: exercise['id'] as String,
+          name: exercise['name'] as String,
+          muscleGroup: MuscleGroupExtension.fromString(exercise['muscleGroup'] as String),
+          bestOneRepMaxSet: exercise['bestOneRepMaxSet'] != null ? ExerciseSet(
+            reps: exercise['bestOneRepMaxSet']['reps'] as int,
+            weight: exercise['bestOneRepMaxSet']['weight'] as int,
+            isPR: exercise['bestOneRepMaxSet']['pr'] as bool,
+          ) : null,
+          bestRepsSet: exercise['bestRepsSet'] != null ? ExerciseSet(
+            reps: exercise['bestRepsSet']['reps'] as int,
+            weight: exercise['bestRepsSet']['weight'] as int,
+            isPR: exercise['bestRepsSet']['pr'] as bool,
+          ) : null,
+          bestWeightSet: exercise['bestWeightSet'] != null ? ExerciseSet(
+            reps: exercise['bestWeightSet']['reps'] as int,
+            weight: exercise['bestWeightSet']['weight'] as int,
+            isPR: exercise['bestWeightSet']['pr'] as bool,
+          ) : null,
+        ),
+        sets: (exerciseData['sets'] as List<dynamic>).map((setData) {
+          return ExerciseSet(
+            reps: setData['reps'] as int,
+            weight: setData['weight'] as int,
+            isPR: setData['pr'] as bool,
+          );
+        }).toList(),
+      );
+    }).toList();
 
-  Future<void> addFinishedWorkout(FinishedWorkout workout) async {
+    return FinishedWorkout(
+      id: workoutDoc.id,
+      name: workoutData['name'] as String,
+      exerciseList: exerciseList,
+      workoutNote: workoutData['workoutNote'] as String?,
+      date: (workoutData['date'] as Timestamp).toDate(),
+      duration: workoutData['duration'] as int? ?? 0,
+    );
+  }).toList();
+
+  notifyListeners();
+}
+
+  Future<void> addFinishedWorkout(FinishedWorkout finishedWorkout) async {
     final docRef = _db
         .collection('users')
         .doc(_auth.currentUser?.uid)
         .collection('workouts')
-        .doc();
-    workout.id = docRef.id;
-    await docRef.set({
-      'name': workout.name,
-      'date': workout.date,
-      'duration': workout.duration,
-    });
-
-    for (var weightLiftingSet in workout.exerciseList) {
-      final exerciseDocRef = docRef.collection('exerciseList').doc();
-      await exerciseDocRef.set({
-        'name': weightLiftingSet.exercise.name,
-        'muscleGroup':
-            weightLiftingSet.exercise.muscleGroup.muscleGroupToString(),
-      });
-
-      for (var set in weightLiftingSet.sets) {
-        final setDocRef = exerciseDocRef.collection('sets').doc();
-        await setDocRef.set(set.toMap());
-      }
-    }
-
+        .doc(); // Generate a new document reference with a unique ID
+    finishedWorkout.id = docRef.id; // Set the ID in the FinishedWorkout object
+    await docRef.set(finishedWorkout
+        .toMap()); // Use set method to add the document with the specified ID
     fetchFinishedWorkouts();
   }
 
   Future<void> removeFinishedWorkout(String id) async {
     try {
-      final docId = _finishedWorkouts.firstWhere((workout) => workout.id == id).id;
+      final docId =
+          _finishedWorkouts.firstWhere((workout) => workout.id == id).id;
       _finishedWorkouts.removeWhere((workout) => workout.id == id);
       await _db
           .collection('users')
@@ -98,7 +107,7 @@ class FinishedWorkoutState with ChangeNotifier {
           .collection('workouts')
           .doc(docId)
           .delete();
-      
+
       // Remove best sets from exercises and update them in the database
       for (var workout in _finishedWorkouts) {
         for (var weightLiftingSet in workout.exerciseList) {
@@ -133,50 +142,3 @@ class FinishedWorkoutState with ChangeNotifier {
     }
   }
 }
-
-
-  Future<List<WeightliftingSet>> _fetchExerciseList(
-      DocumentReference workoutRef) async {
-    final exercisesSnapshot = await workoutRef.collection('exerciseList').get();
-    return Future.wait(exercisesSnapshot.docs.map((exerciseDoc) async {
-      final exerciseData = exerciseDoc.data();
-
-      // Check if required fields exist
-      if (!exerciseData.containsKey('name') ||
-          !exerciseData.containsKey('muscleGroup')) {
-        throw Exception('Invalid exercise data');
-      }
-
-      final setsList = await _fetchSets(exerciseDoc.reference);
-
-      return WeightliftingSet(
-        exercise: Exercise(
-          id: exerciseDoc.id,
-          name: exerciseData['name'] as String,
-          muscleGroup: MuscleGroupExtension.fromString(
-              exerciseData['muscleGroup'] as String)!,
-        ),
-        sets: setsList,
-      );
-    }).toList());
-  }
-
-  Future<List<ExerciseSet>> _fetchSets(DocumentReference exerciseRef) async {
-    final setsSnapshot = await exerciseRef.collection('sets').get();
-    return setsSnapshot.docs.map((setDoc) {
-      final setData = setDoc.data();
-
-      // Check if required fields exist
-      if (!setData.containsKey('reps') ||
-          !setData.containsKey('weight') ||
-          !setData.containsKey('pr')) {
-        throw Exception('Invalid set data');
-      }
-
-      return ExerciseSet(
-        reps: setData['reps'] as int,
-        weight: setData['weight'] as int,
-        isPR: setData['pr'] as bool,
-      );
-    }).toList();
-  }

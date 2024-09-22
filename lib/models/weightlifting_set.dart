@@ -5,7 +5,6 @@ class WeightliftingSet {
   final Exercise exercise;
   List<ExerciseSet> sets;
 
-
   ExerciseSet get bestSet {
     return sets.reduce((current, next) {
       return current.oneRepMax > next.oneRepMax ? current : next;
@@ -38,5 +37,20 @@ class WeightliftingSet {
   @override
   String toString() {
     return 'WeightliftingSet(exercise: $exercise, sets: $sets)';
+  }
+
+  // Add fromMap and toMap methods for serialization
+  factory WeightliftingSet.fromMap(Map<String, dynamic> map) {
+    return WeightliftingSet(
+      exercise: Exercise.fromMap(map['exercise']),
+      sets: List<ExerciseSet>.from(map['sets']?.map((x) => ExerciseSet.fromMap(x))),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'exercise': exercise.toMap(),
+      'sets': sets.map((x) => x.toMap()).toList(),
+    };
   }
 }

@@ -20,20 +20,7 @@ class WorkoutPlan {
     return {
       'id': id,
       'name': name,
-      'exerciseList': exerciseList
-          .map((set) => {
-                'exercise': {
-                  'exerciseName': set.exercise.name,
-                  'muscleGroup': set.exercise.muscleGroup.muscleGroupToString(),
-                },
-                'sets': set.sets
-                    .map((exerciseSet) => {
-                          'reps': exerciseSet.reps,
-                          'weight': exerciseSet.weight,
-                        })
-                    .toList(),
-              })
-          .toList(),
+      'exerciseList': exerciseList.map((set) => set.toMap()).toList(),
       'workoutNote': workoutNote,
     };
   }
@@ -42,9 +29,9 @@ class WorkoutPlan {
     final List<WeightliftingSet> exerciseList = (workoutPlanData['exerciseList'] as List<dynamic>).map((set) {
       final exerciseData = set['exercise'] as Map<String, dynamic>;
       final Exercise exercise = Exercise(
-        id: '',
-        name: exerciseData['exerciseName'] as String,
-        muscleGroup: MuscleGroupExtension.fromString(exerciseData['muscleGroup'] as String),
+        id: exerciseData['id'] as String,
+        name: exerciseData['name'] as String,
+        muscleGroup: MuscleGroupExtension.fromString(exerciseData['muscleGroup']),
       );
 
       final List<ExerciseSet> sets = (set['sets'] as List<dynamic>).map((exerciseSet) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/screens/edit_finished_workout_screen.dart';
+import 'package:gym_metrics/screens/exercise_detail_screen.dart';
 import 'package:gym_metrics/states/exercise_state.dart';
 import 'package:gym_metrics/states/finished_workout_state.dart';
 import 'package:provider/provider.dart';
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/settings': (context) => const SettingsScreen(),
+
 
       },
       theme: ThemeData.dark().copyWith(

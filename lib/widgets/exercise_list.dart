@@ -15,8 +15,7 @@ class ExerciseList extends StatelessWidget {
       itemBuilder: (context, index) {
         final exercise = exercises[index];
         return ExerciseCard(
-          name: exercise.name,
-          muscleGroup: exercise.muscleGroup,
+          exercise: exercise,
         );
       },
     );

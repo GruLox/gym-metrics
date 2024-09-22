@@ -122,8 +122,7 @@ class _ExerciseSelectionScreenState extends State<ExerciseSelectionScreen> with 
                     itemBuilder: (context, index) {
                       final exercise = filteredExercises[index];
                       return SelectableExerciseCard(
-                        name: exercise.name,
-                        muscleGroup: exercise.muscleGroup,
+                        exercise: exercise,
                         selectionCallback: () => selectionCallback(exercise),
                       );
                     },

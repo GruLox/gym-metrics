@@ -41,9 +41,7 @@ class _WorkoutPlanStartScreenState extends State<WorkoutPlanStartScreen> {
                 itemCount: workoutPlan.exerciseList.length,
                 itemBuilder: ((context, index) {
                   return ExerciseCard(
-                    name: workoutPlan.exerciseList[index].exercise.name,
-                    muscleGroup:
-                        workoutPlan.exerciseList[index].exercise.muscleGroup,
+                    exercise: workoutPlan.exerciseList[index].exercise,
                   );
                 }),
               ),

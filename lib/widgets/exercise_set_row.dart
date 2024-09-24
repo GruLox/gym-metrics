@@ -26,12 +26,14 @@ class ExerciseSetRow extends StatefulWidget {
 
 class _ExerciseSetRowState extends State<ExerciseSetRow> {
   bool _isCompleted = false;
+  late ExerciseSet previousPerformance;
   late TextEditingController _repsController;
   late TextEditingController _weightController;
 
   @override
   void initState() {
     super.initState();
+    previousPerformance = widget.exerciseSet;
     _repsController = TextEditingController();
     _weightController = TextEditingController();
 
@@ -73,7 +75,7 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
             Expanded(
               flex: 4,
               child: Text(
-                widget.exerciseSet.toString(),
+                previousPerformance.toString(),
                 textAlign: TextAlign.center,
               ),
             ),

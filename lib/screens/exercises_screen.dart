@@ -60,7 +60,7 @@ class _ExercisesScreenState extends State<ExercisesScreen>
                   } else if (exercises.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  return ExerciseList(exercises: exercises);
+                  return ExerciseList(exercises: exercises, isOnExercisesScreen: true);
                 },
               ),
             ),

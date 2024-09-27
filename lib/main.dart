@@ -3,6 +3,7 @@ import 'package:gym_metrics/screens/edit_finished_workout_screen.dart';
 import 'package:gym_metrics/screens/exercise_detail_screen.dart';
 import 'package:gym_metrics/states/exercise_state.dart';
 import 'package:gym_metrics/states/finished_workout_state.dart';
+import 'package:gym_metrics/states/ongoing_workout_state.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_metrics/firebase/firebase_initializer.dart';
 import 'package:gym_metrics/screens/active_workout_screen.dart';
@@ -31,6 +32,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => WorkoutPlanState()),
         ChangeNotifierProvider(create: (_) => ExerciseState()),
         ChangeNotifierProvider(create: (_) => FinishedWorkoutState()),
+        ChangeNotifierProvider(create: (_) => OngoingWorkoutState()),
+        
+
       ],
       child: const MyApp(),
     ),

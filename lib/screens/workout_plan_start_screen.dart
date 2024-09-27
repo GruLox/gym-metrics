@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
+import 'package:gym_metrics/states/ongoing_workout_state.dart';
 import 'package:gym_metrics/widgets/exercise_card.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutPlanStartScreen extends StatefulWidget {
   const WorkoutPlanStartScreen({
@@ -62,7 +64,10 @@ class _WorkoutPlanStartScreenState extends State<WorkoutPlanStartScreen> {
                 ),
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/active_workout', arguments: workoutPlan);
+                    Navigator.pushNamed(context, '/active_workout',
+                        arguments: workoutPlan);
+                    Provider.of<OngoingWorkoutState>(context, listen: false)
+                        .startWorkout(workoutPlan);
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white,

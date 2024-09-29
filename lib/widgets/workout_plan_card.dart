@@ -1,10 +1,11 @@
 import 'dart:io';
-
+import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
+import 'package:gym_metrics/states/finished_workout_state.dart';
 
 final FirebaseFirestore db = FirebaseFirestore.instance;
 final FirebaseAuth auth = FirebaseAuth.instance;
@@ -27,6 +28,7 @@ class WorkoutPlanCard extends StatefulWidget {
 
 class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
   List<Widget> sets = [];
+  DateTime? lastPerformed;
 
   CollectionReference workoutPlans = db
       .collection('users')
@@ -37,17 +39,44 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
   void initState() {
     super.initState();
     getSets();
+    fetchLastPerformedDate();
   }
 
   void getSets() {
     sets = [];
-    for (var set in widget.workoutPlan.exerciseList.reversed) {
+    for (var set in widget.workoutPlan.exerciseList) {
       sets.add(
         Text(
           '${set.exercise.name} x ${set.sets.length}',
           style: const TextStyle(color: Colors.grey),
         ),
       );
+    }
+  }
+
+  void fetchLastPerformedDate() {
+    final finishedWorkoutState =
+        Provider.of<FinishedWorkoutState>(context, listen: false);
+    lastPerformed =
+        finishedWorkoutState.getLastPerformedDate(widget.workoutPlan.name);
+  }
+
+  String getFormattedLastPerformedDate() {
+    if (lastPerformed == null) {
+      return 'Last performed: N/A';
+    }
+
+    final now = DateTime.now();
+    final difference = now.difference(lastPerformed!);
+
+    if (difference.inDays >= 1) {
+      return 'Last performed: ${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+    } else if (difference.inHours >= 1) {
+      return 'Last performed: ${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+    } else if (difference.inMinutes >= 1) {
+      return 'Last performed: ${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
+    } else {
+      return 'Last performed: just now';
     }
   }
 
@@ -108,7 +137,8 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.workoutPlan.name, style: const TextStyle(fontSize: 20.0)),
+                Text(widget.workoutPlan.name,
+                    style: const TextStyle(fontSize: 20.0)),
                 PopupMenuButton(
                   padding: EdgeInsets.zero,
                   itemBuilder: (context) {
@@ -187,9 +217,10 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
               ],
             ),
             const SizedBox(height: 5.0),
-            const Text(
-              'Last performed: 2 days ago',
-              style: TextStyle(color: Colors.grey),
+            const SizedBox(height: 5.0),
+            Text(
+              getFormattedLastPerformedDate(),
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 10.0),
             Column(

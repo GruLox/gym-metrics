@@ -3,8 +3,9 @@ class ExerciseSet {
   int reps;
   bool isPR;
   int oneRepMax;
+  bool isCompleted;
 
-  ExerciseSet({this.weight = 0, this.reps = 0, this.isPR = false})
+  ExerciseSet({this.weight = 0, this.reps = 0, this.isPR = false, this.isCompleted = false})
       : oneRepMax = calculate1RM(weight, reps);
 
   static int calculate1RM(int weight, int reps) {
@@ -37,6 +38,29 @@ class ExerciseSet {
       weight: map['weight'] as int,
       reps: map['reps'] as int,
       isPR: map['pr'] as bool,
+    );
+  }
+
+  ExerciseSet copy() {
+    return ExerciseSet(
+      weight: weight,
+      reps: reps,
+      isPR: isPR,
+      isCompleted: isCompleted,
+    );
+  }
+
+  ExerciseSet copyWith({
+    int? weight,
+    int? reps,
+    bool? isPR,
+    bool? isCompleted,
+  }) {
+    return ExerciseSet(
+      weight: weight ?? this.weight,
+      reps: reps ?? this.reps,
+      isPR: isPR ?? this.isPR,
+      isCompleted: isCompleted ?? this.isCompleted,
     );
   }
 }

@@ -14,14 +14,16 @@ class CompletionIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    return IconButton(
-      iconSize: 40.0,
-      icon: Icon(
-        isLocked ? Icons.lock : Icons.check_box,
-        color: isCompleted ? const Color(0xFF20ba68) : Colors.white,
+    return Container(
+      margin: EdgeInsets.only(right: 10.0),
+      child: IconButton(
+        iconSize: 40.0,
+        icon: Icon(
+          isLocked ? Icons.lock : Icons.check_box,
+          color: isCompleted ? const Color(0xFF20ba68) : Colors.white,
+        ),
+        onPressed: onPressed,
       ),
-      onPressed: onPressed,
     );
   }
 }

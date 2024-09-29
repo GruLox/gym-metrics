@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/models/finished_workout.dart';
+import 'package:gym_metrics/models/weekly_workout_statistics_data.dart';
 import 'package:gym_metrics/states/finished_workout_state.dart';
 import 'package:gym_metrics/states/user_state.dart';
+import 'package:gym_metrics/states/ongoing_workout_state.dart';
 import 'package:gym_metrics/widgets/chart_card.dart';
 import 'package:gym_metrics/widgets/workouts_per_week_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -22,42 +21,27 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final userState = Provider.of<UserState>(context);
     final finishedWorkoutState = Provider.of<FinishedWorkoutState>(context);
+    final ongoingWorkoutState = Provider.of<OngoingWorkoutState>(context);
     final username = userState.username;
-    //bar groups with dummy data
-    final List<BarChartGroupData> barGroups = [
-      BarChartGroupData(x: 0, barRods: [
-        BarChartRodData(toY: 5, color: Colors.blue),
-      ]),
-      BarChartGroupData(x: 1, barRods: [
-        BarChartRodData(toY: 4, color: Colors.blue),
-      ]),
-      BarChartGroupData(x: 2, barRods: [
-        BarChartRodData(toY: 5, color: Colors.blue),
-      ]),
-      BarChartGroupData(x: 3, barRods: [
-        BarChartRodData(toY: 5, color: Colors.blue),
-      ]),
-      BarChartGroupData(x: 4, barRods: [
-        BarChartRodData(toY: 3, color: Colors.blue),
-      ]),
-      BarChartGroupData(x: 5, barRods: [
-        BarChartRodData(toY: 5, color: Colors.blue),
-      ]),
-      BarChartGroupData(x: 6, barRods: [
-        BarChartRodData(toY: 1, color: Colors.blue),
-      ]),
-    ];
+    final List<WeeklyWorkoutStatisticsData> workoutsPerWeek =
+        finishedWorkoutState.finishedWorkoutsPerWeek.reversed.toList(); // Reverse the list
+    final List<DateTime> dates = workoutsPerWeek.map((data) => data.date).toList();
 
-    late final List<BarChartGroupData> workoutsPerWeek = [];
-
-  
-
-    // init state
-    @override
-    void initState() {
-      super.initState();
-      finishedWorkoutState.fetchFinishedWorkouts();
-    }
+    final List<BarChartGroupData> barGroups = workoutsPerWeek
+        .asMap()
+        .entries
+        .map(
+          (entry) => BarChartGroupData(
+            x: entry.key, // Use the index as the x value
+            barRods: [
+              BarChartRodData(
+                toY: entry.value.count.toDouble(),
+                color: Colors.blue,
+              ),
+            ],
+          ),
+        )
+        .toList();
 
     return Scaffold(
       body: Stack(
@@ -79,7 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.settings),
-                      onPressed: () => Navigator.pushNamed(context, '/settings'),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/settings'),
                     ),
                   ],
                 ),
@@ -117,53 +102,53 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'Workouts per week',
                   chart: SizedBox(
                     height: 200.0, // Set a specific height for the chart
-                    child: WorkoutsPerWeekChart(barGroups: barGroups),
+                    child: WorkoutsPerWeekChart(
+                        barGroups: barGroups, dates: dates),
                   ),
                 ),
-                // Other widgets in the column
               ],
             ),
           ),
-          // Consumer<OngoingWorkoutState>(
-          //   builder: (context, ongoingWorkoutState, child) {
-          //     final ongoingWorkout = ongoingWorkoutState.ongoingWorkout;
-          //     if (ongoingWorkout == null) {
-          //       return SizedBox.shrink();
-          //     }
-          //     return Positioned(
-          //       bottom: 0,
-          //       left: 0,
-          //       right: 0,
-          //       child: Container(
-          //         color: const Color.fromARGB(255, 24, 34, 48),
-          //         padding: const EdgeInsets.all(20.0),
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //           children: [
-          //             Text(
-          //               'Ongoing Workout: ${ongoingWorkout.name}',
-          //               style: const TextStyle(
-          //                 fontSize: 16.0,
-          //                 color: Colors.white,
-          //                 fontWeight: FontWeight.bold,
-          //               ),
-          //             ),
-          //             ElevatedButton(
-          //               style: ElevatedButton.styleFrom(
-          //                 backgroundColor: Colors.white,
-          //                 foregroundColor: Color.fromARGB(255, 24, 34, 48),
-          //               ),
-          //               onPressed: () {
-          //                 Navigator.pushNamed(context, '/active_workout', arguments: ongoingWorkout);
-          //               },
-          //               child: const Text('Resume'),
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // ),
+          Consumer<OngoingWorkoutState>(
+            builder: (context, ongoingWorkoutState, child) {
+              final ongoingWorkout = ongoingWorkoutState.ongoingWorkout;
+              if (ongoingWorkout == null) {
+                return SizedBox.shrink();
+              }
+              return Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  color: const Color.fromARGB(255, 24, 34, 48),
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Ongoing Workout: ${ongoingWorkout.name}',
+                        style: const TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Color.fromARGB(255, 24, 34, 48),
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/active_workout', arguments: ongoingWorkout);
+                        },
+                        child: const Text('Resume'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

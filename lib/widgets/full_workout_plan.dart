@@ -3,6 +3,8 @@ import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/models/exercise_set.dart';
 import 'package:gym_metrics/models/weightlifting_set.dart';
 import 'package:gym_metrics/widgets/exercise_container.dart';
+import 'package:provider/provider.dart';
+import 'package:gym_metrics/states/ongoing_workout_state.dart';
 
 class FullWorkoutPlan extends StatefulWidget {
   final List<WeightliftingSet> exercises;
@@ -29,6 +31,8 @@ class FullWorkoutPlan extends StatefulWidget {
 class _FullWorkoutPlanState extends State<FullWorkoutPlan> {
   @override
   Widget build(BuildContext context) {
+    final ongoingWorkoutState = Provider.of<OngoingWorkoutState>(context);
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -66,6 +70,25 @@ class _FullWorkoutPlanState extends State<FullWorkoutPlan> {
               }
             },
           ),
+          if (ongoingWorkoutState.ongoingWorkout != null)
+            ElevatedButton(
+              onPressed: () {
+                ongoingWorkoutState.endWorkout();
+                Navigator.pop(context); // Navigate back to the previous screen
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Cancel Workout',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
         ],
       ),
     );

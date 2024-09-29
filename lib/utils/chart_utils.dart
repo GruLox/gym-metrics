@@ -47,10 +47,10 @@ FlTitlesData buildTitlesData({required double interval, required double minY, re
         interval: 1,
       ),
     ),
-    topTitles: AxisTitles(
+    topTitles: const AxisTitles(
       sideTitles: SideTitles(showTitles: false),
     ),
-    rightTitles: AxisTitles(
+    rightTitles: const AxisTitles(
       sideTitles: SideTitles(showTitles: false),
     ),
   );

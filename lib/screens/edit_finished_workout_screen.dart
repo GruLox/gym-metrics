@@ -3,7 +3,6 @@ import 'package:gym_metrics/constants.dart';
 import 'package:gym_metrics/models/finished_workout.dart';
 import 'package:gym_metrics/states/finished_workout_state.dart';
 import 'package:gym_metrics/widgets/full_workout_plan.dart';
-import 'package:gym_metrics/widgets/workout_plan_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_metrics/mixins/exercise_set_management_mixin.dart';
 
@@ -79,7 +78,7 @@ class _EditFinishedWorkoutScreenState extends State<EditFinishedWorkoutScreen> w
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Finished Workout', style: const TextStyle(fontSize: 25.0)),
+        title: const Text('Edit Finished Workout', style: TextStyle(fontSize: 25.0)),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),

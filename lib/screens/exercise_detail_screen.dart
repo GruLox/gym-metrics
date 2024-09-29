@@ -41,14 +41,14 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
     }).toList();
 
     setState(() {
-      _history = history;
+      _history = history.reversed.toList();
       _isLoading = false;
     });
   }
 
   List<FlSpot> _getOneRepMaxDataPoints() {
     List<FlSpot> dataPoints = [];
-    final history = _history.reversed.toList();
+    final history = _history;
     for (int i = 0; i < history.length; i++) {
       final workout = history[i];
       final setIndex = workout.exerciseList
@@ -63,7 +63,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
 
   List<FlSpot> _getTotalVolumeDataPoints() {
     List<FlSpot> dataPoints = [];
-    final history = _history.reversed.toList();
+    final history = _history;
     for (int i = 0; i < history.length; i++) {
       final workout = history[i];
       final setIndex = workout.exerciseList
@@ -79,7 +79,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
 
   List<FlSpot> _getBestSetRepsDataPoints() {
     List<FlSpot> dataPoints = [];
-    final history = _history.reversed.toList();
+    final history = _history;
     for (int i = 0; i < history.length; i++) {
       final workout = history[i];
       final setIndex = workout.exerciseList

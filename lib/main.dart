@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/screens/edit_finished_workout_screen.dart';
-import 'package:gym_metrics/screens/exercise_detail_screen.dart';
 import 'package:gym_metrics/states/exercise_state.dart';
 import 'package:gym_metrics/states/finished_workout_state.dart';
 import 'package:gym_metrics/states/ongoing_workout_state.dart';
@@ -57,11 +56,11 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/': (context) => const MainScreen(),
         '/home': (context) => const HomeScreen(),
-        '/history': (context) => HistoryScreen(),
+        '/history': (context) => const HistoryScreen(),
         '/workout': (context) => const WorkoutScreen(),
         '/add-workout-plan': (context) => const AddWorkoutPlanScreen(),
         '/edit-workout-plan': (context) => const EditWorkoutPlanScreen(),
-        '/edit-finished-workout': (context) => EditFinishedWorkoutScreen(),
+        '/edit-finished-workout': (context) => const EditFinishedWorkoutScreen(),
         '/workout-plan-start': (context) => const WorkoutPlanStartScreen(),
         '/active_workout': (context) => const ActiveWorkoutScreen(),
         '/exercises': (context) => const ExercisesScreen(),

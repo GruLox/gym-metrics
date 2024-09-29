@@ -5,6 +5,7 @@ import 'package:gym_metrics/enums/muscle_group.dart';
 import 'package:gym_metrics/models/exercise.dart';
 import 'package:gym_metrics/models/exercise_set.dart';
 import 'package:gym_metrics/models/finished_workout.dart';
+import 'package:gym_metrics/models/weekly_workout_statistics_data.dart';
 import 'package:gym_metrics/models/weightlifting_set.dart';
 
 class FinishedWorkoutState with ChangeNotifier {
@@ -14,75 +15,104 @@ class FinishedWorkoutState with ChangeNotifier {
 
   List<FinishedWorkout> get finishedWorkouts => _finishedWorkouts;
 
+  List<WeeklyWorkoutStatisticsData> get finishedWorkoutsPerWeek {
+    List<WeeklyWorkoutStatisticsData> workoutsPerWeek =
+        List.generate(8, (index) {
+      DateTime date = DateTime.now().subtract(Duration(days: index * 7));
+      return WeeklyWorkoutStatisticsData(
+        date: date,
+        count: 0,
+      );
+    });
+
+    DateTime now = DateTime.now();
+    for (var workout in _finishedWorkouts) {
+      int weeksAgo = now.difference(workout.date).inDays ~/ 7;
+      if (weeksAgo < 8) {
+        workoutsPerWeek[weeksAgo].count++;
+      }
+    }
+
+    return workoutsPerWeek;
+  }
+
   FinishedWorkoutState() {
     fetchFinishedWorkouts();
   }
 
   Future<void> fetchFinishedWorkouts() async {
-  final workoutSnapshot = await _db
-      .collection('users')
-      .doc(_auth.currentUser?.uid)
-      .collection('workouts')
-      .orderBy('date', descending: true)
-      .get();
+    final workoutSnapshot = await _db
+        .collection('users')
+        .doc(_auth.currentUser?.uid)
+        .collection('workouts')
+        .orderBy('date', descending: true)
+        .get();
 
-  _finishedWorkouts = workoutSnapshot.docs.map((workoutDoc) {
-    final workoutData = workoutDoc.data();
+    _finishedWorkouts = workoutSnapshot.docs.map((workoutDoc) {
+      final workoutData = workoutDoc.data();
 
-    // Check if required fields exist
-    if (!workoutData.containsKey('name') ||
-        !workoutData.containsKey('date') ||
-        !workoutData.containsKey('duration') ||
-        !workoutData.containsKey('exerciseList')) {
-      throw Exception('Invalid workout data');
-    }
+      // Check if required fields exist
+      if (!workoutData.containsKey('name') ||
+          !workoutData.containsKey('date') ||
+          !workoutData.containsKey('duration') ||
+          !workoutData.containsKey('exerciseList')) {
+        throw Exception('Invalid workout data');
+      }
 
-    // Map exerciseList field directly
-    final exerciseList = (workoutData['exerciseList'] as List<dynamic>).map((exerciseData) {
-      final exercise = exerciseData['exercise'];
-      return WeightliftingSet(
-        exercise: Exercise(
-          id: exercise['id'] as String,
-          name: exercise['name'] as String,
-          muscleGroup: MuscleGroupExtension.fromString(exercise['muscleGroup'] as String),
-          bestOneRepMaxSet: exercise['bestOneRepMaxSet'] != null ? ExerciseSet(
-            reps: exercise['bestOneRepMaxSet']['reps'] as int,
-            weight: exercise['bestOneRepMaxSet']['weight'] as int,
-            isPR: exercise['bestOneRepMaxSet']['pr'] as bool,
-          ) : null,
-          bestRepsSet: exercise['bestRepsSet'] != null ? ExerciseSet(
-            reps: exercise['bestRepsSet']['reps'] as int,
-            weight: exercise['bestRepsSet']['weight'] as int,
-            isPR: exercise['bestRepsSet']['pr'] as bool,
-          ) : null,
-          bestWeightSet: exercise['bestWeightSet'] != null ? ExerciseSet(
-            reps: exercise['bestWeightSet']['reps'] as int,
-            weight: exercise['bestWeightSet']['weight'] as int,
-            isPR: exercise['bestWeightSet']['pr'] as bool,
-          ) : null,
-        ),
-        sets: (exerciseData['sets'] as List<dynamic>).map((setData) {
-          return ExerciseSet(
-            reps: setData['reps'] as int,
-            weight: setData['weight'] as int,
-            isPR: setData['pr'] as bool,
-          );
-        }).toList(),
+      // Map exerciseList field directly
+      final exerciseList =
+          (workoutData['exerciseList'] as List<dynamic>).map((exerciseData) {
+        final exercise = exerciseData['exercise'];
+        return WeightliftingSet(
+          exercise: Exercise(
+            id: exercise['id'] as String,
+            name: exercise['name'] as String,
+            muscleGroup: MuscleGroupExtension.fromString(
+                exercise['muscleGroup'] as String),
+            bestOneRepMaxSet: exercise['bestOneRepMaxSet'] != null
+                ? ExerciseSet(
+                    reps: exercise['bestOneRepMaxSet']['reps'] as int,
+                    weight: exercise['bestOneRepMaxSet']['weight'] as int,
+                    isPR: exercise['bestOneRepMaxSet']['pr'] as bool,
+                  )
+                : null,
+            bestRepsSet: exercise['bestRepsSet'] != null
+                ? ExerciseSet(
+                    reps: exercise['bestRepsSet']['reps'] as int,
+                    weight: exercise['bestRepsSet']['weight'] as int,
+                    isPR: exercise['bestRepsSet']['pr'] as bool,
+                  )
+                : null,
+            bestWeightSet: exercise['bestWeightSet'] != null
+                ? ExerciseSet(
+                    reps: exercise['bestWeightSet']['reps'] as int,
+                    weight: exercise['bestWeightSet']['weight'] as int,
+                    isPR: exercise['bestWeightSet']['pr'] as bool,
+                  )
+                : null,
+          ),
+          sets: (exerciseData['sets'] as List<dynamic>).map((setData) {
+            return ExerciseSet(
+              reps: setData['reps'] as int,
+              weight: setData['weight'] as int,
+              isPR: setData['pr'] as bool,
+            );
+          }).toList(),
+        );
+      }).toList();
+
+      return FinishedWorkout(
+        id: workoutDoc.id,
+        name: workoutData['name'] as String,
+        exerciseList: exerciseList,
+        workoutNote: workoutData['workoutNote'] as String?,
+        date: (workoutData['date'] as Timestamp).toDate(),
+        duration: workoutData['duration'] as int? ?? 0,
       );
     }).toList();
 
-    return FinishedWorkout(
-      id: workoutDoc.id,
-      name: workoutData['name'] as String,
-      exerciseList: exerciseList,
-      workoutNote: workoutData['workoutNote'] as String?,
-      date: (workoutData['date'] as Timestamp).toDate(),
-      duration: workoutData['duration'] as int? ?? 0,
-    );
-  }).toList();
-
-  notifyListeners();
-}
+    notifyListeners();
+  }
 
   Future<void> addFinishedWorkout(FinishedWorkout finishedWorkout) async {
     final docRef = _db
@@ -140,5 +170,14 @@ class FinishedWorkoutState with ChangeNotifier {
         await weightLiftingSet.exercise.updateBestSets(set);
       }
     }
+  }
+
+  DateTime? getLastPerformedDate(String workoutPlanName) {
+    for (var workout in _finishedWorkouts) {
+      if (workout.name == workoutPlanName) {
+        return workout.date;
+      }
+    }
+    return null;
   }
 }

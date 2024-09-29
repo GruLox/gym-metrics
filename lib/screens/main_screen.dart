@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
-import 'package:gym_metrics/models/history_data.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/screens/exercises_screen.dart';
 import 'package:gym_metrics/screens/history_screen.dart';

@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/constants.dart';
 
-class RepsInput extends StatelessWidget {
+class WorkoutInputWidget extends StatelessWidget {
   final TextEditingController controller;
-  final int startingReps;
+  final int startingData;
+  final void Function(String) onSubmitted;
 
-  const RepsInput({Key? key, required this.controller, required this.startingReps}) : super(key: key);
+
+  const WorkoutInputWidget({Key? key, required this.controller, required this.startingData, required this.onSubmitted}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 10.0),
         SizedBox(
           height: 35.0,
           width: 70.0,
           child: TextField(
+            keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
             textAlignVertical: TextAlignVertical.center,
             controller: controller,
             style: const TextStyle(color: Colors.black),
             decoration: kWhiteInputDecoration.copyWith(
-              hintText: startingReps.toString(),
+              hintText: startingData.toString(),
             ),
+            onSubmitted: onSubmitted,
           ),
         ),
       ],

@@ -20,10 +20,8 @@ class ExerciseContainer extends StatefulWidget {
   final bool isLocked;
   final WeightliftingSet weightliftingSet;
   final int index;
-  final void Function(int index, ExerciseSet weightliftingSet)
-      onSetAddedCallback;
-  final void Function(int index, ExerciseSet weightliftingSet)
-      onSetRemovedCallback;
+  final void Function(int index, ExerciseSet weightliftingSet) onSetAddedCallback;
+  final void Function(int index, ExerciseSet weightliftingSet) onSetRemovedCallback;
   final void Function() onExerciseRemovedCallback;
 
   @override
@@ -42,8 +40,7 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
   @override
   void didUpdateWidget(covariant ExerciseContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.weightliftingSet.sets.length !=
-        widget.weightliftingSet.sets.length) {
+    if (oldWidget.weightliftingSet.sets.length != widget.weightliftingSet.sets.length) {
       setCount = widget.weightliftingSet.sets.length;
     }
   }
@@ -69,6 +66,7 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                   );
                 });
               },
+              exerciseIndex: widget.index,
             ),
           ],
         ),
@@ -87,7 +85,6 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
             children: [
               const ExerciseLabels(),
               Table(
-                border: TableBorder.all(color: Colors.white),
                 columnWidths: const {
                   0: FlexColumnWidth(2),
                   2: FlexColumnWidth(4),

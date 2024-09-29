@@ -37,7 +37,7 @@ class _AddWorkoutPlanScreenState extends State<AddWorkoutPlanScreen>
               WorkoutPlan addedWorkoutPlan = WorkoutPlan(
                 id: '',
                 name: _nameController.text,
-                exerciseList: exercises.reversed.toList(),
+                exerciseList: exercises.toList(),
               );
               uploadWorkoutPlan(addedWorkoutPlan);
               Navigator.pop(context, addedWorkoutPlan);

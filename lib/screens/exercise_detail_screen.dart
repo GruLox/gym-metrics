@@ -41,7 +41,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
     }).toList();
 
     setState(() {
-      _history = history.reversed.toList();
+      _history = history.toList();
       _isLoading = false;
     });
   }

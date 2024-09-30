@@ -9,6 +9,7 @@ import 'package:gym_metrics/states/ongoing_workout_state.dart';
 class FullWorkoutPlan extends StatefulWidget {
   final List<WeightliftingSet> exercises;
   final bool isLocked;
+  final bool isEditing;
   final Function(int index, ExerciseSet weightliftingSet) onSetAdded;
   final Function(int index, ExerciseSet weightliftingSet) onSetRemoved;
   final Future<void> Function() onExerciseAdded;
@@ -21,6 +22,7 @@ class FullWorkoutPlan extends StatefulWidget {
     required this.onSetRemoved,
     required this.onExerciseAdded,
     required this.onExerciseRemoved,
+    this.isEditing = false,
     this.isLocked = false,
   });
 
@@ -29,9 +31,15 @@ class FullWorkoutPlan extends StatefulWidget {
 }
 
 class _FullWorkoutPlanState extends State<FullWorkoutPlan> {
+  void _onExerciseSetChanged(int exerciseIndex, int setIndex, ExerciseSet updatedSet) {
+    setState(() {
+      widget.exercises[exerciseIndex].sets[setIndex] = updatedSet;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ongoingWorkoutState = Provider.of<OngoingWorkoutState>(context);
+    final ongoingWorkoutState = Provider.of<OngoingWorkoutState>(context, listen: false);
 
     return SingleChildScrollView(
       child: Column(
@@ -66,6 +74,7 @@ class _FullWorkoutPlanState extends State<FullWorkoutPlan> {
                     });
                   },
                   isLocked: widget.isLocked,
+                  isEditing: widget.isEditing,
                 );
               }
             },

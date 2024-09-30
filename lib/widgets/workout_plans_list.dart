@@ -4,13 +4,11 @@ import 'package:gym_metrics/widgets/workout_plan_card.dart';
 
 class WorkoutPlansList extends StatelessWidget {
   final List<WorkoutPlan> workoutPlans;
-  final Function(int) onWorkoutDeleted;
   final void Function() onWorkoutUpdated;
 
   const WorkoutPlansList({
     Key? key,
     required this.workoutPlans,
-    required this.onWorkoutDeleted,
     required this.onWorkoutUpdated,
   }) : super(key: key);
 
@@ -29,7 +27,6 @@ class WorkoutPlansList extends StatelessWidget {
       itemBuilder: (context, index) {
         return WorkoutPlanCard(
           workoutPlan: workoutPlans[index],
-          onWorkoutDeletedCallback: () => onWorkoutDeleted(index),
           onWorkoutUpdatedCallback: onWorkoutUpdated,
         );
       },

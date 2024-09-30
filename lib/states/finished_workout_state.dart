@@ -180,4 +180,18 @@ class FinishedWorkoutState with ChangeNotifier {
     }
     return null;
   }
+
+  ExerciseSet getPreviousExerciseSet(String exerciseId, int setIndex) {
+    for (var workout in _finishedWorkouts) {
+      for (var weightLiftingSet in workout.exerciseList) {
+        if (weightLiftingSet.exercise.id == exerciseId) {
+          if (setIndex < weightLiftingSet.sets.length) {
+            return weightLiftingSet.sets[setIndex];
+          }
+        }
+      }
+    }
+    return ExerciseSet(reps: 0, weight: 0, isPR: false);
+  }
+    
 }

@@ -21,11 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final userState = Provider.of<UserState>(context);
     final finishedWorkoutState = Provider.of<FinishedWorkoutState>(context);
-    final ongoingWorkoutState = Provider.of<OngoingWorkoutState>(context);
+    final countOfWorkouts = finishedWorkoutState.finishedWorkouts.length;
     final username = userState.username;
     final List<WeeklyWorkoutStatisticsData> workoutsPerWeek =
-        finishedWorkoutState.finishedWorkoutsPerWeek.reversed.toList(); // Reverse the list
-    final List<DateTime> dates = workoutsPerWeek.map((data) => data.date).toList();
+        finishedWorkoutState.finishedWorkoutsPerWeek.reversed
+            .toList(); // Reverse the list
+    final List<DateTime> dates =
+        workoutsPerWeek.map((data) => data.date).toList();
 
     final List<BarChartGroupData> barGroups = workoutsPerWeek
         .asMap()
@@ -88,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(
                               fontSize: 20.0, fontWeight: FontWeight.bold),
                         ),
-                        const Text('154 workouts'),
+                        Text('$countOfWorkouts workouts'),
                       ],
                     ),
                   ],
@@ -139,7 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           foregroundColor: Color.fromARGB(255, 24, 34, 48),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, '/active_workout', arguments: ongoingWorkout);
+                          Navigator.pushNamed(context, '/active_workout',
+                              arguments: ongoingWorkout);
                         },
                         child: const Text('Resume'),
                       ),

@@ -24,7 +24,7 @@ class _EditFinishedWorkoutScreenState extends State<EditFinishedWorkoutScreen> w
     _finishedWorkout = ModalRoute.of(context)!.settings.arguments as FinishedWorkout;
     _nameController.text = _finishedWorkout.name;
     if (exercises.isEmpty) {
-      exercises = _finishedWorkout.exerciseList.reversed.toList();
+      exercises = _finishedWorkout.exerciseList.toList();
     }
   }
 
@@ -67,7 +67,7 @@ class _EditFinishedWorkoutScreenState extends State<EditFinishedWorkoutScreen> w
     FinishedWorkout updatedFinishedWorkout = FinishedWorkout(
       id: _finishedWorkout.id,
       name: _nameController.text,
-      exerciseList: exercises.reversed.toList(),
+      exerciseList: exercises.toList(),
       date: _finishedWorkout.date,
       duration: _finishedWorkout.duration,
     );
@@ -110,6 +110,7 @@ class _EditFinishedWorkoutScreenState extends State<EditFinishedWorkoutScreen> w
                     onSetRemoved: onSetRemoved,
                     onExerciseAdded: () => onExerciseAdded(context),
                     onExerciseRemoved: onExerciseRemoved,
+                    isEditing: true,
                   ),
                 ],
               ),

@@ -24,7 +24,7 @@ class _EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> with Exer
         ModalRoute.of(context)!.settings.arguments as WorkoutPlan;
     _nameController.text = _workoutPlan.name;
     if (exercises.isEmpty) {
-      exercises = _workoutPlan.exerciseList.reversed.toList();
+      exercises = _workoutPlan.exerciseList.toList();
     }
   }
 
@@ -69,7 +69,7 @@ class _EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> with Exer
     WorkoutPlan updatedWorkoutPlan = WorkoutPlan(
       id: workoutPlan.id,
       name: _nameController.text,
-      exerciseList: exercises.reversed.toList(),
+      exerciseList: exercises.toList(),
       workoutNote: workoutPlan.workoutNote,
     );
     updateWorkoutPlan(updatedWorkoutPlan);

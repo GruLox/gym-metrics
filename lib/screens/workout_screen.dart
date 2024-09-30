@@ -61,9 +61,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       builder: (context, workoutState, child) {
                         return WorkoutPlansList(
                           workoutPlans: workoutState.workoutPlans,
-                          onWorkoutDeleted: (index) {
-                            workoutState.removeWorkoutPlan(index);
-                          },
                           onWorkoutUpdated: _onWorkoutUpdated,
                         );
                       },

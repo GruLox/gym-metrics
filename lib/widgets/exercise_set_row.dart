@@ -1,35 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/models/exercise_set.dart';
+import 'package:gym_metrics/states/finished_workout_state.dart';
 import 'package:gym_metrics/widgets/completion_icon.dart';
 import 'package:gym_metrics/widgets/dismiss_background.dart';
 import 'package:gym_metrics/widgets/workout_input_widget.dart';
 import 'package:gym_metrics/widgets/set_number_display.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_metrics/states/ongoing_workout_state.dart';
-import 'dart:async';
 
 class ExerciseSetRow extends StatefulWidget {
   const ExerciseSetRow({
     super.key,
     required this.setNumber,
     required this.exerciseSet,
-    this.isLocked = false,
     required this.onSetDismissedCallback,
     required this.exerciseIndex,
+    required this.exerciseId,
+    required this.onExerciseSetChanged,
+    this.isLocked = false,
+    this.isEditing = false, 
   });
 
   final bool isLocked;
+  final bool isEditing; 
   final int setNumber;
+  final int exerciseIndex;
+  final String exerciseId;
   final ExerciseSet exerciseSet;
   final Function(int) onSetDismissedCallback;
-  final int exerciseIndex;
+  final Function(int, ExerciseSet) onExerciseSetChanged;
 
   @override
   State<ExerciseSetRow> createState() => _ExerciseSetRowState();
 }
 
 class _ExerciseSetRowState extends State<ExerciseSetRow> {
-  late ExerciseSet _currentExerciseSet;
+  late ExerciseSet _editableExerciseSet;
   late ExerciseSet _previousExerciseSet;
   late TextEditingController _repsController;
   late TextEditingController _weightController;
@@ -37,10 +43,16 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
   @override
   void initState() {
     super.initState();
-    _currentExerciseSet = widget.exerciseSet.copy();
-    _previousExerciseSet = widget.exerciseSet.copy();
-    _repsController = TextEditingController();
-    _weightController = TextEditingController();
+    _editableExerciseSet = widget.exerciseSet.copy();
+    _editableExerciseSet.isCompleted =
+        _editableExerciseSet.isCompleted || widget.isEditing;
+    _previousExerciseSet =
+        Provider.of<FinishedWorkoutState>(context, listen: false)
+            .getPreviousExerciseSet(widget.exerciseId, widget.setNumber - 1);
+    _repsController = TextEditingController(
+        text: "${widget.isEditing ? _editableExerciseSet.reps : ""}");
+    _weightController = TextEditingController(
+        text: "${widget.isEditing ? _editableExerciseSet.weight : ""}");
   }
 
   @override
@@ -52,9 +64,9 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
 
   void _onRepsSubmitted(String value) {
     final newReps = int.tryParse(value) ?? 0;
-    if (newReps != _currentExerciseSet.reps) {
+    if (newReps != _editableExerciseSet.reps) {
       setState(() {
-        _currentExerciseSet.reps = newReps;
+        _editableExerciseSet.reps = newReps;
         _notifyState();
       });
     }
@@ -62,9 +74,9 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
 
   void _onWeightSubmitted(String value) {
     final newWeight = int.tryParse(value) ?? 0;
-    if (newWeight != _currentExerciseSet.weight) {
+    if (newWeight != _editableExerciseSet.weight) {
       setState(() {
-        _currentExerciseSet.weight = newWeight;
+        _editableExerciseSet.weight = newWeight;
         _notifyState();
       });
     }
@@ -72,20 +84,28 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
 
   void _toggleCompletion() {
     setState(() {
-      _currentExerciseSet.isCompleted = !_currentExerciseSet.isCompleted;
+      _editableExerciseSet.isCompleted = !_editableExerciseSet.isCompleted;
       _notifyState();
     });
   }
 
   void _notifyState() {
-    final ongoingWorkoutState = Provider.of<OngoingWorkoutState>(context, listen: false);
-    ongoingWorkoutState.updateExerciseSet(widget.exerciseIndex, widget.setNumber - 1, _currentExerciseSet.copy());
+    widget.onExerciseSetChanged(widget.setNumber - 1, _editableExerciseSet);
+    if (!widget.isEditing) {
+      // Only notify state if not in editing mode
+      final ongoingWorkoutState =
+          Provider.of<OngoingWorkoutState>(context, listen: false);
+      ongoingWorkoutState.updateExerciseSet(widget.exerciseIndex,
+          widget.setNumber - 1, _editableExerciseSet.copy());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: _currentExerciseSet.isCompleted ? const Color(0xFF11664a) : Colors.transparent,
+      color: _editableExerciseSet.isCompleted
+          ? const Color(0xFF11664a)
+          : Colors.transparent,
       child: Dismissible(
         key: UniqueKey(),
         direction: DismissDirection.endToStart,
@@ -95,12 +115,14 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
         background: const DismissBackground(),
         child: Row(
           children: [
-            Expanded(flex: 3, child: SetNumberDisplay(setNumber: widget.setNumber)),
+            Expanded(
+                flex: 3, child: SetNumberDisplay(setNumber: widget.setNumber)),
             Expanded(
               flex: 5,
               child: Center(
                 child: Text(
-                  _previousExerciseSet.toString(), // Display previous performance
+                  _previousExerciseSet
+                      .toString(), // Display previous performance
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -109,7 +131,7 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
               flex: 5,
               child: WorkoutInputWidget(
                 controller: _weightController,
-                startingData: _currentExerciseSet.weight,
+                startingData: _editableExerciseSet.weight,
                 onSubmitted: _onWeightSubmitted,
               ),
             ),
@@ -117,7 +139,7 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
               flex: 5,
               child: WorkoutInputWidget(
                 controller: _repsController,
-                startingData: _currentExerciseSet.reps,
+                startingData: _editableExerciseSet.reps,
                 onSubmitted: _onRepsSubmitted,
               ),
             ),
@@ -125,7 +147,7 @@ class _ExerciseSetRowState extends State<ExerciseSetRow> {
               flex: 3,
               child: CompletionIcon(
                 isLocked: widget.isLocked,
-                isCompleted: _currentExerciseSet.isCompleted,
+                isCompleted: _editableExerciseSet.isCompleted,
                 onPressed: _toggleCompletion,
               ),
             ),

@@ -6,8 +6,12 @@ class WorkoutInputWidget extends StatelessWidget {
   final int startingData;
   final void Function(String) onSubmitted;
 
-
-  const WorkoutInputWidget({Key? key, required this.controller, required this.startingData, required this.onSubmitted}) : super(key: key);
+  const WorkoutInputWidget(
+      {Key? key,
+      required this.controller,
+      required this.startingData,
+      required this.onSubmitted})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

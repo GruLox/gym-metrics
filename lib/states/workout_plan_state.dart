@@ -15,54 +15,72 @@ class WorkoutPlanState with ChangeNotifier {
   }
 
   Future<void> fetchWorkoutPlans() async {
-    final QuerySnapshot querySnapshot = await _db
-        .collection('users')
-        .doc(_auth.currentUser?.uid)
-        .collection('workoutPlans')
-        .get();
+    try {
+      final QuerySnapshot querySnapshot = await _db
+          .collection('users')
+          .doc(_auth.currentUser?.uid)
+          .collection('workoutPlans')
+          .get();
 
-    _workoutPlans = querySnapshot.docs.map((doc) {
-      final dynamic data = doc.data();
-      return WorkoutPlan.fromMap(data)..id = doc.id;
-    }).toList();
+      _workoutPlans = querySnapshot.docs.map((doc) {
+        final dynamic data = doc.data();
+        return WorkoutPlan.fromMap(data)..id = doc.id;
+      }).toList();
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e) {
+      // Handle error
+      print('Error fetching workout plans: $e');
+    }
   }
 
   Future<void> addWorkoutPlan(WorkoutPlan workoutPlan) async {
-    final docRef = _db
-        .collection('users')
-        .doc(_auth.currentUser?.uid)
-        .collection('workoutPlans')
-        .doc(); // Generate a new document reference with a unique ID
+    try {
+      final docRef = _db
+          .collection('users')
+          .doc(_auth.currentUser?.uid)
+          .collection('workoutPlans')
+          .doc(); // Generate a new document reference with a unique ID
 
-    workoutPlan.id = docRef.id; // Set the ID in the WorkoutPlan object
+      workoutPlan.id = docRef.id; // Set the ID in the WorkoutPlan object
 
-    await docRef.set(workoutPlan
-        .toMap()); // Use set method to add the document with the specified ID
+      await docRef.set(workoutPlan.toMap()); // Use set method to add the document with the specified ID
 
-    fetchWorkoutPlans();
+      fetchWorkoutPlans();
+    } catch (e) {
+      // Handle error
+      print('Error adding workout plan: $e');
+    }
   }
 
-  Future<void> removeWorkoutPlan(int index) async {
-    final docId = _workoutPlans[index].id;
-    await _db
-        .collection('users')
-        .doc(_auth.currentUser?.uid)
-        .collection('workoutPlans')
-        .doc(docId)
-        .delete();
-    fetchWorkoutPlans();
+  Future<void> deleteWorkoutPlan(String docId) async {
+    try {
+      await _db
+          .collection('users')
+          .doc(_auth.currentUser?.uid)
+          .collection('workoutPlans')
+          .doc(docId)
+          .delete();
+      fetchWorkoutPlans();
+    } catch (e) {
+      // Handle error
+      print('Error deleting workout plan: $e');
+    }
   }
 
   Future<void> updateWorkoutPlan(WorkoutPlan workoutPlan) async {
-    final docId = workoutPlan.id;
-    await _db
-        .collection('users')
-        .doc(_auth.currentUser?.uid)
-        .collection('workoutPlans')
-        .doc(docId)
-        .update(workoutPlan.toMap());
-    fetchWorkoutPlans();
+    try {
+      final docId = workoutPlan.id;
+      await _db
+          .collection('users')
+          .doc(_auth.currentUser?.uid)
+          .collection('workoutPlans')
+          .doc(docId)
+          .update(workoutPlan.toMap());
+      fetchWorkoutPlans();
+    } catch (e) {
+      // Handle error
+      print('Error updating workout plan: $e');
+    }
   }
 }

@@ -12,27 +12,18 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  final FinishedWorkoutState _finishedWorkoutState = FinishedWorkoutState();
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _finishedWorkoutState.fetchFinishedWorkouts().then((_) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
+    _fetchFinishedWorkouts();
   }
 
-  void refreshFinishedWorkouts() {
+  Future<void> _fetchFinishedWorkouts() async {
+    await Provider.of<FinishedWorkoutState>(context, listen: false).fetchFinishedWorkouts();
     setState(() {
-      _isLoading = true;
-    });
-    _finishedWorkoutState.fetchFinishedWorkouts().then((_) {
-      setState(() {
-        _isLoading = false;
-      });
+      _isLoading = false;
     });
   }
 
@@ -64,7 +55,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             children: finishedWorkoutState.finishedWorkouts
                                 .map((data) => HistoryCard(
                                       finishedWorkout: data,
-                                      onRefresh: refreshFinishedWorkouts,
                                     ))
                                 .toList(),
                           ),

@@ -15,13 +15,17 @@ class ExerciseContainer extends StatefulWidget {
     required this.onSetRemovedCallback,
     required this.onExerciseRemovedCallback,
     this.isLocked = false,
+    this.isEditing = false,
   });
 
   final bool isLocked;
+  final bool isEditing;
   final WeightliftingSet weightliftingSet;
   final int index;
-  final void Function(int index, ExerciseSet weightliftingSet) onSetAddedCallback;
-  final void Function(int index, ExerciseSet weightliftingSet) onSetRemovedCallback;
+  final void Function(int index, ExerciseSet weightliftingSet)
+      onSetAddedCallback;
+  final void Function(int index, ExerciseSet weightliftingSet)
+      onSetRemovedCallback;
   final void Function() onExerciseRemovedCallback;
 
   @override
@@ -40,9 +44,16 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
   @override
   void didUpdateWidget(covariant ExerciseContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.weightliftingSet.sets.length != widget.weightliftingSet.sets.length) {
+    if (oldWidget.weightliftingSet.sets.length !=
+        widget.weightliftingSet.sets.length) {
       setCount = widget.weightliftingSet.sets.length;
     }
+  }
+
+  void _onExerciseSetChanged(int setIndex, ExerciseSet updatedSet) {
+    setState(() {
+      widget.weightliftingSet.sets[setIndex] = updatedSet;
+    });
   }
 
   @override
@@ -54,9 +65,12 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
         TableRow(
           children: [
             ExerciseSetRow(
-              isLocked: widget.isLocked,
+              exerciseId: widget.weightliftingSet.exercise.id,
+              exerciseIndex: widget.index,
               setNumber: i + 1,
               exerciseSet: widget.weightliftingSet.sets[i],
+              isEditing: widget.isEditing,
+              isLocked: widget.isLocked,
               onSetDismissedCallback: (int setNumber) {
                 setState(() {
                   setCount--;
@@ -66,7 +80,7 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
                   );
                 });
               },
-              exerciseIndex: widget.index,
+              onExerciseSetChanged: _onExerciseSetChanged,
             ),
           ],
         ),

@@ -1,25 +1,19 @@
 import 'dart:io';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gym_metrics/models/workout_plan.dart';
 import 'package:gym_metrics/states/finished_workout_state.dart';
-
-final FirebaseFirestore db = FirebaseFirestore.instance;
-final FirebaseAuth auth = FirebaseAuth.instance;
+import 'package:gym_metrics/states/workout_plan_state.dart';
 
 class WorkoutPlanCard extends StatefulWidget {
   const WorkoutPlanCard({
     super.key,
     required this.workoutPlan,
-    required this.onWorkoutDeletedCallback,
     required this.onWorkoutUpdatedCallback,
   });
 
   final WorkoutPlan workoutPlan;
-  final void Function() onWorkoutDeletedCallback;
   final void Function() onWorkoutUpdatedCallback;
 
   @override
@@ -30,11 +24,6 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
   List<Widget> sets = [];
   DateTime? lastPerformed;
 
-  CollectionReference workoutPlans = db
-      .collection('users')
-      .doc(auth.currentUser!.uid)
-      .collection('workoutPlans');
-
   @override
   void initState() {
     super.initState();
@@ -43,22 +32,20 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
   }
 
   void getSets() {
-    sets = [];
-    for (var set in widget.workoutPlan.exerciseList) {
-      sets.add(
-        Text(
-          '${set.exercise.name} x ${set.sets.length}',
-          style: const TextStyle(color: Colors.grey),
-        ),
+    sets = widget.workoutPlan.exerciseList.map((set) {
+      return Text(
+        '${set.exercise.name} x ${set.sets.length}',
+        style: const TextStyle(color: Colors.grey),
       );
-    }
+    }).toList();
   }
 
-  void fetchLastPerformedDate() {
+  void fetchLastPerformedDate() async {
     final finishedWorkoutState =
         Provider.of<FinishedWorkoutState>(context, listen: false);
     lastPerformed =
-        finishedWorkoutState.getLastPerformedDate(widget.workoutPlan.name);
+        await finishedWorkoutState.getLastPerformedDate(widget.workoutPlan.name);
+    setState(() {});
   }
 
   String getFormattedLastPerformedDate() {
@@ -81,38 +68,55 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
   }
 
   Future<void> deleteWorkoutPlan() async {
-    try {
-      // Query for the document ID using a field that uniquely identifies the workout plan
-      QuerySnapshot querySnapshot = await workoutPlans
-          .where('name', isEqualTo: widget.workoutPlan.name)
-          .get();
-      if (querySnapshot.docs.isNotEmpty) {
-        // Get the first document (assuming there are no duplicate names)
-        DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
-        String docId = documentSnapshot.id;
+    final workoutPlanState = Provider.of<WorkoutPlanState>(context, listen: false);
+    await workoutPlanState.deleteWorkoutPlan(widget.workoutPlan.id);
+  }
 
-        // Delete the workout plan
-        await workoutPlans.doc(docId).delete();
-
-        // Optionally, you can show a snackbar or perform other actions after successful deletion
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Workout plan deleted'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Workout plan does not exist'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } catch (e) {
-      // Handle any errors that occur during the deletion process
-      print('Error deleting workout plan: $e');
-    }
+  Future<bool> showDeleteConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        if (Platform.isIOS) {
+          return CupertinoAlertDialog(
+            title: const Text('Confirm Delete'),
+            content: const Text('Are you sure you want to delete this workout plan?'),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              CupertinoDialogAction(
+                child: const Text('Delete'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        } else {
+          return AlertDialog(
+            title: const Text('Confirm Delete'),
+            content: const Text('Are you sure you want to delete this workout plan?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: const Text('Delete'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -145,7 +149,6 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
                     return [
                       PopupMenuItem(
                         onTap: () async {
-                          // Navigate to the edit workout plan screen
                           await Navigator.pushNamed(
                             context,
                             '/edit-workout-plan',
@@ -157,55 +160,9 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
                       ),
                       PopupMenuItem(
                         onTap: () async {
-                          bool confirmDelete = await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              if (Platform.isIOS) {
-                                return CupertinoAlertDialog(
-                                  title: const Text('Confirm Delete'),
-                                  content: const Text(
-                                      'Are you sure you want to delete this workout plan?'),
-                                  actions: <Widget>[
-                                    CupertinoDialogAction(
-                                      child: const Text('Cancel'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(false);
-                                      },
-                                    ),
-                                    CupertinoDialogAction(
-                                      child: const Text('Delete'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(true);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              } else {
-                                return AlertDialog(
-                                  title: const Text('Confirm Delete'),
-                                  content: const Text(
-                                      'Are you sure you want to delete this workout plan?'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('Cancel'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(false);
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: const Text('Delete'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(true);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              }
-                            },
-                          );
-                          if (confirmDelete == true) {
+                          bool confirmDelete = await showDeleteConfirmationDialog(context);
+                          if (confirmDelete) {
                             await deleteWorkoutPlan();
-                            widget.onWorkoutDeletedCallback();
                           }
                         },
                         child: const Text('Delete'),
@@ -216,7 +173,6 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
                 ),
               ],
             ),
-            const SizedBox(height: 5.0),
             const SizedBox(height: 5.0),
             Text(
               getFormattedLastPerformedDate(),

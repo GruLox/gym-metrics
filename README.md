@@ -1,10 +1,20 @@
-# GymMetrics
+<img src="assets/icon/icon.jpg" alt="GymMetrics Logo" width="150"/>
 
-![GymMetrics Logo](assets/icon/icon.jpg)
+## Table of Contents
 
-## Overview
+- [Story](#story)
+- [About GymMetrics](#about-gymmetrics)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Installation](#installation)
 
-**GymMetrics** is a comprehensive Flutter application designed to help you track and manage your workout routines. Whether you're a fitness enthusiast or a professional athlete, GymMetrics provides the tools you need to monitor your progress and achieve your fitness goals.
+## Story
+
+I developed **GymMetrics** because I didn't want to pay for the premium subscription of a similar commercial app. So, I completely remade it from scratch according to my own taste. Now, I'm in sole control of my workout data.
+
+## About GymMetrics
+
+This app is designed to provide all the essential tools for tracking and managing workout routines, making it an ideal choice for gym enthusiasts. By using GymMetrics, you can monitor your progress, customize workout plans, and achieve your fitness goals for free.
 
 ## Features
 
@@ -12,40 +22,16 @@
 - **Exercise Tracking**: Log your exercises, sets, and reps.
 - **Progress Monitoring**: Visualize your progress with detailed charts and statistics.
 - **Customizable Templates**: Use and customize workout templates to fit your needs.
-- **Cross-Platform**: Available on Android and iOS.
+- **Cross-Platform**: Available on Android and iOS. *(Note: The app is not available for download on iOS because I don't want to pay Apple a fortune.)*
 
 ## Screenshots
 
-<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-    <img src="assets/screenshots/history_screen.png" alt="History" width="300"/>
-    <img src="assets/screenshots/workout_screen.png" alt="Workout Plans" width="300"/>
-</div>
+| History Screen | Workout Plans | Active Workout |
+|----------------|---------------|----------------|
+| <img src="assets/screenshots/history_screen.png" alt="History" width="300"/> | <img src="assets/screenshots/workout_screen.png" alt="Workout Plans" width="300"/> | <img src="assets/screenshots/active_workout.png" alt="Active Workout" width="300"/> |
 
-## Getting Started
+## Installation
 
-### Prerequisites
+To install the APK, download it from the link below and follow the instructions to install it on your Android device.
 
-- [Flutter SDK](https://flutter.dev/docs/get-started/install)
-- [Android Studio](https://developer.android.com/studio) or [Xcode](https://developer.apple.com/xcode/) for mobile development
-- [Visual Studio Code](https://code.visualstudio.com/) (recommended IDE)
-
-### Installation
-
-1. **Clone the repository:**
-
-    ```sh
-    git clone https://github.com/yourusername/gym_metrics.git
-    cd gym_metrics
-    ```
-
-2. **Install dependencies:**
-
-    ```sh
-    flutter pub get
-    ```
-
-3. **Run the app:**
-
-    ```sh
-    flutter run
-    ```
+[Download GymMetrics APK](https://github.com/GruLox/gym-metrics/releases/download/v1.0.0-alpha/gym_metrics_v1.0.0-alpha.apk)

@@ -141,8 +141,13 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.workoutPlan.name,
-                    style: const TextStyle(fontSize: 20.0)),
+                Expanded(
+                  child: Text(
+                    widget.workoutPlan.name,
+                    style: const TextStyle(fontSize: 20.0),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
                 PopupMenuButton(
                   padding: EdgeInsets.zero,
                   itemBuilder: (context) {

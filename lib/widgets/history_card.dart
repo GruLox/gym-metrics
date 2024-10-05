@@ -92,10 +92,13 @@ class HistoryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                finishedWorkout.name,
-                style: const TextStyle(
-                    fontSize: 24.0, fontWeight: FontWeight.bold),
+              Expanded(
+                child: Text(
+                  finishedWorkout.name,
+                  style: const TextStyle(
+                      fontSize: 24.0, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               PopupMenuButton(
                 padding: EdgeInsets.zero,
@@ -179,9 +182,12 @@ class ExerciseRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          '${exercise.sets.length} x ${exercise.exercise.name}',
-          style: const TextStyle(fontSize: 14.0),
+        Expanded(
+          child: Text(
+            '${exercise.sets.length} x ${exercise.exercise.name}',
+            style: const TextStyle(fontSize: 14.0),
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         const Spacer(),
         Text(

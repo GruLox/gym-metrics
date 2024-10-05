@@ -20,6 +20,7 @@ class ExerciseTitle extends StatelessWidget {
           color: kPrimaryColor,
           fontWeight: FontWeight.bold,
         ),
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

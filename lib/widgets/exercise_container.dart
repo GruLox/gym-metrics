@@ -5,6 +5,7 @@ import 'package:gym_metrics/models/weightlifting_set.dart';
 import 'package:gym_metrics/widgets/exercise_labels.dart';
 import 'package:gym_metrics/widgets/exercise_set_row.dart';
 import 'package:gym_metrics/widgets/exercise_title.dart';
+import 'package:gym_metrics/screens/exercise_detail_screen.dart'; 
 
 class ExerciseContainer extends StatefulWidget {
   const ExerciseContainer({
@@ -93,7 +94,19 @@ class _ExerciseContainerState extends State<ExerciseContainer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20.0),
-          ExerciseTitle(title: widget.weightliftingSet.exercise.name),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ExerciseDetailScreen(
+                    exercise: widget.weightliftingSet.exercise,
+                  ),
+                ),
+              );
+            },
+            child: ExerciseTitle(title: widget.weightliftingSet.exercise.name),
+          ),
           const SizedBox(height: 15.0),
           Column(
             children: [

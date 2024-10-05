@@ -9,12 +9,12 @@ class ExerciseCard extends StatefulWidget {
     super.key,
     required this.exercise, 
     this.icon = kExerciseIcon,
-    this.isOnExercisesScreen = false, // Add this parameter
+    this.isOnExercisesScreen = false, 
   });
 
   final Exercise exercise; 
   final IconData icon;
-  final bool isOnExercisesScreen; // Add this field
+  final bool isOnExercisesScreen; 
 
   @override
   State<ExerciseCard> createState() => _ExerciseCardState();
@@ -47,16 +47,22 @@ class _ExerciseCardState extends State<ExerciseCard> {
               ),
             ),
             const SizedBox(width: 20.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.exercise.name,
-                  style: const TextStyle(
-                      fontSize: 16.0, fontWeight: FontWeight.bold),
-                ),
-                Text(widget.exercise.muscleGroup.muscleGroupToString()),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.exercise.name,
+                    style: const TextStyle(
+                        fontSize: 16.0, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    widget.exercise.muscleGroup.muscleGroupToString(),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
